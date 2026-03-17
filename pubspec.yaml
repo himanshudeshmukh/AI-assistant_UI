@@ -1,0 +1,120 @@
+name: profiler
+description: "Profiler"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ==================== Core Dependencies ====================
+
+  ## HTTP Networking
+  ## Used for API communication with backend
+  ## https://pub.dev/packages/http
+  http: ^1.1.0
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^1.0.3
+  google_fonts: ^8.0.2
+  animated_splash_screen: ^1.1.0
+
+  # ==================== State Management (Optional) ====================
+  ## Uncomment if using provider for state management
+  ## provider: ^6.1.0
+
+  ## Uncomment if using Riverpod for state management
+  ## flutter_riverpod: ^2.4.0
+
+  # ==================== Authentication (Optional) ====================
+  ## Firebase Authentication
+  ## Uncomment if using Firebase for auth
+  ## firebase_core: ^2.24.0
+  ## firebase_auth: ^4.13.0
+
+  ## Flutter Facebook SDK
+  ## Uncomment if implementing Facebook OAuth
+  ## flutter_facebook_sdk: ^5.2.0
+
+  # ==================== Local Storage ====================
+  ## Secure Storage
+  ## Used for storing sensitive data like tokens
+  ## Uncomment when needed
+  ## flutter_secure_storage: ^9.0.0
+
+  ## Shared Preferences
+  ## Used for storing app preferences
+  ## Uncomment when needed
+  ## shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # ==================== Linting & Code Quality ====================
+
+  ## Flutter Lints
+  ## Provides recommended linting rules
+  ## https://pub.dev/packages/flutter_lints
+  flutter_lints: ^3.0.0
+
+  # ==================== Testing (Optional) ====================
+  ## Uncomment if writing tests
+  ## mockito: ^5.4.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/clothes/
+
+  # ==================== Assets ====================
+  # Uncomment and add your assets here
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+
+  # ==================== Fonts ====================
+  # Uncomment and configure your custom fonts
+  # fonts:
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: assets/fonts/Poppins-Regular.ttf
+  #       - asset: assets/fonts/Poppins-Bold.ttf
+  #         weight: 700
+
+# ==================== Notes ====================
+#
+# Dependencies Explanation:
+#
+# 1. http: Used for making HTTP requests to the backend API
+#    - Handles all API communication
+#    - Provides good balance between simplicity and features
+#    - Alternative: dio (for more advanced features)
+#
+# 2. flutter_lints: Provides linting rules
+#    - Ensures code quality
+#    - Follows Flutter best practices
+#    - Configure in analysis_options.yaml
+#
+# 3. NOTE: JSON Serialization
+#    - Models use manual JSON serialization (no code generation needed)
+#    - This reduces build time and complexity
+#    - If you prefer automatic generation, add:
+#      json_annotation: ^4.8.0 (dev: json_serializable, build_runner)
+#
+# Optional Dependencies (Add as needed):
+#
+# - provider/riverpod: For state management
+#   Use if you need more complex state management than setState
+#
+# - firebase_auth: For Firebase authentication
+#   Use if integrating with Firebase for authentication
+#
+# - flutter_secure_storage: For secure token storage
+#   Use to store JWT tokens securely on device
+#
+# - shared_preferences: For app preferences
+#   Use to store non-sensitive user preferences
