@@ -16,11 +16,14 @@ dependencies:
   ## HTTP Networking
   ## Used for API communication with backend
   ## https://pub.dev/packages/http
-  http: ^1.1.0
+  http: ^1.2.2
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.0.3
   google_fonts: ^8.0.2
   animated_splash_screen: ^1.1.0
+  cached_network_image: ^3.4.1
+  image_picker: ^1.0.7
+
 
   # ==================== State Management (Optional) ====================
   ## Uncomment if using provider for state management

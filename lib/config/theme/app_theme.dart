@@ -512,3 +512,83 @@
 //   /// Check if theme is light
 //   bool get isLight => brightness == Brightness.light;
 // }
+
+
+
+
+import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
+import 'app_colors.dart';
+class AppTheme {
+  AppTheme._();
+  static ThemeData get lightTheme {
+    const textTheme = TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.5,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textPrimary,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textPrimary,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textSecondary,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textMuted,
+        letterSpacing: 1.2,
+      ),
+    );
+    return ThemeData(
+      useMaterial3: true,
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: const ColorScheme.light(
+        surface: AppColors.surface,
+        primary: AppColors.navActive,
+        onSurface: AppColors.textPrimary,
+      ),
+      textTheme: textTheme,
+      dividerColor: AppColors.border,
+      splashFactory: NoSplash.splashFactory,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.searchBackground,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(4),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        hintStyle: const TextStyle(
+          fontSize: 12,
+          color: AppColors.textMuted,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12,
+            vertical: 12),
+      ),
+    );
+  }
+}

@@ -11,6 +11,7 @@
 ///   - Solution: top: 220 padding = 40px clear space ✅
 
 import 'package:flutter/material.dart';
+import 'package:profiler/presentation/screens/auth/signup_screen.dart';
 import 'package:profiler/presentation/screens/splash_screen.dart';
 import '../../../config/constants/constants.dart';
 import '../../../config/theme/app_colors.dart';
@@ -165,9 +166,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   void _navigateToForgotPassword() {
     print('Navigating to forgot password screen...');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Forgot password feature coming soon')),
-    );
+    Navigator.of(context).pushNamed('/forgotPassword');
   }
 
   void _handleFacebookLogin() {
@@ -313,7 +312,7 @@ class LoginScreenState extends State<LoginScreen> {
                   // onPressed: _isLoading ? null : _handleLogin,
                   onPressed: () {
                     // Navigator.push(context, MaterialPageRoute(builder: (_) => MainNavigation()));
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => SplashScreenRobot()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const MainNavigation()));
                   }
                 ),
 
@@ -394,7 +393,14 @@ class LoginScreenState extends State<LoginScreen> {
                         style: AppTextStyles.bodyLarge,
                       ),
                       GestureDetector(
-                        onTap: _navigateToSignup,
+                        onTap: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (_) => const SignupScreen(),
+                ),
+                );
+                },
                         child: Text(
                           'Register',
                           style: AppTextStyles.linkSmall,

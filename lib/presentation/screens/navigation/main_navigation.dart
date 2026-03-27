@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:profiler/config/theme/app_dimensions.dart';
+
+import '../home/StylePage.dart';
+import '../home/WalletPage.dart';
 import '../home/home_screen.dart';
 import '../home/profile_screen.dart';
-import '../home/recommendation_screen.dart';
-
+import '../home/wardrobe_gallery_page.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -13,55 +16,79 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
 
-  int _currentIndex = 0;
+  int currentIndex = 0;
 
-  final List<Widget> _pages = const [
+  final List<Widget> pages = const [
     HomeScreen(),
-    GenerateScreen(),
+    StylePage(),
+    WardrobeGalleryPage(),
     ProfileScreen(),
   ];
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
+  /// 🔥 Dynamic titles
+  final List<String> titles = [
+    "Home",
+    "Style",
+    "Wardrobe",
+    "Profile",
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
 
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
+    return Scaffold(
+      /// 🔥 GLOBAL APPBAR
+      appBar: AppBar(
+        title: Text(titles[currentIndex]),
+
+        /// LEFT TITLE ALIGN
+        centerTitle: true,
+
+        /// 🔥 RIGHT WALLET ICON
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_balance_wallet_outlined),
+            iconSize: AppDimensions.iconL,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const WalletPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
 
+      /// 🔥 BODY
+      body: IndexedStack(
+        index: currentIndex,
+        children: pages,
+      ),
+
+      /// 🔥 BOTTOM NAV
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
+        currentIndex: currentIndex,
+        onTap: (i) => setState(() => currentIndex = i),
 
         type: BottomNavigationBarType.fixed,
 
-        selectedItemColor: const Color(0xFF2D2A72),
-        unselectedItemColor: Colors.grey,
-
         items: const [
-
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
+            icon: Icon(Icons.home),
             label: "Home",
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.auto_awesome_outlined),
-            activeIcon: Icon(Icons.auto_awesome),
-            label: "Generate",
+            label: "Style",
           ),
-
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
+            icon: Icon(Icons.checkroom),
+            label: "Wardrobe",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
             label: "Profile",
           ),
         ],

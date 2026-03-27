@@ -14,4 +14,24 @@ class Constants {
 
   /// Primary gradient end
   static const String appName = "ClosetGenie";
+  static const String baseUrl = "http://10.0.2.2:8000"; // Android emulator
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

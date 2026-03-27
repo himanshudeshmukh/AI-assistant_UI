@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class StylePage extends StatelessWidget {
+  const StylePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: const Center(
         child: Text(
-          "Home Screen",
+          "Style Screen",
           style: TextStyle(fontSize: 18),
         ),
       ),
