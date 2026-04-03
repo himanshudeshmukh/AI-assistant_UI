@@ -18,7 +18,8 @@ dependencies:
   ## https://pub.dev/packages/http
   http: ^1.1.0
   cupertino_icons: ^1.0.2
-  flutter_svg: ^1.0.3
+  # Aligned with victus_one (same major as your standalone app)
+  flutter_svg: ^2.0.0
   google_fonts: ^8.0.2
   animated_splash_screen: ^1.1.0
 
@@ -69,12 +70,11 @@ flutter:
   uses-material-design: true
   assets:
     - assets/clothes/
+    - assets/icons/apple.png
+    - assets/icons/google.png
 
   # ==================== Assets ====================
-  # Uncomment and add your assets here
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  # Social auth icons (under assets/icons/)
 
   # ==================== Fonts ====================
   # Uncomment and configure your custom fonts

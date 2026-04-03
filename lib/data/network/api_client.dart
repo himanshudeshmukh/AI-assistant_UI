@@ -10,6 +10,7 @@
 /// Uses http package. Add to pubspec.yaml:
 /// dependencies:
 ///   http: ^1.1.0
+library;
 
 import 'dart:async';
 import 'dart:convert';

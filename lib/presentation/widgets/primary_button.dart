@@ -16,6 +16,7 @@
 ///   onPressed: isLoading ? null : handleLogin,
 /// )
 /// ```
+library;
 
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
@@ -46,7 +47,7 @@ class PrimaryButton extends StatefulWidget {
   final Widget? customLoadingWidget;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.isLoading = false,
@@ -54,7 +55,7 @@ class PrimaryButton extends StatefulWidget {
     this.height = AppDimensions.buttonHeight,
     this.loadingIndicatorColor = AppColors.surfaceColor,
     this.customLoadingWidget,
-  }) : super(key: key);
+  });
 
   @override
   State<PrimaryButton> createState() => _PrimaryButtonState();

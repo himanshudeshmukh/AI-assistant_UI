@@ -5,6 +5,7 @@
 /// are defined here with proper naming conventions.
 ///
 /// Usage: AppColors.primaryOrange, AppColors.backgroundColor, etc.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -13,5 +14,5 @@ class Constants {
   Constants._();
 
   /// Primary gradient end
-  static const String appName = "ClosetGenie";
+  static const String appName = "Victus One";
 }

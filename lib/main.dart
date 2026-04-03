@@ -5,9 +5,11 @@
 /// - Navigation routes
 /// - Global error handling
 /// - Root screen setup
+library;
 
 
 import 'package:flutter/material.dart';
+import 'package:profiler/presentation/screens/auth/forgot_password_screen.dart';
 import 'package:profiler/presentation/screens/auth/login_screen.dart';
 import 'package:profiler/presentation/screens/auth/signup_screen.dart';
 import 'package:profiler/presentation/screens/home/home_screen.dart';
@@ -33,13 +35,13 @@ void main() async {
 ///
 /// Configures Material theme and routes
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       // ==================== Branding ====================
-      title: 'Genie.ai',
+      title: 'Victus One',
 
       // ==================== Theme Configuration ====================
       theme: ThemeData(
@@ -144,9 +146,8 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashScreenRobot(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
-        // TODO: Add more routes
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/home': (context) => const HomeScreen(),
-        // '/forgot-password': (context) => const ForgotPasswordScreen(),
       },
 
       // ==================== Error Handling ====================

@@ -4,6 +4,7 @@
 /// across the application and make changes maintainable from a single point.
 ///
 /// Following: DRY principle, Configuration Management best practices
+library;
 
 class NavigationConstants {
   // Private constructor to prevent instantiation

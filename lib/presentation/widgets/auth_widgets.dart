@@ -3,6 +3,7 @@
 /// Reusable UI components for authentication screens.
 /// Follows component composition principles and single responsibility.
 ///
+library;
 
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class AuthTextField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const AuthTextField({
-    Key? key,
+    super.key,
     this.value,
     required this.hintText,
     this.errorText,
@@ -51,7 +52,7 @@ class AuthTextField extends StatelessWidget {
     this.minLines = 1,
     this.textInputAction = TextInputAction.next,
     this.focusNode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +160,7 @@ class AuthButton extends StatelessWidget {
   final Color? foregroundColor;
 
   const AuthButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
@@ -168,7 +169,7 @@ class AuthButton extends StatelessWidget {
     this.height = 48,
     this.backgroundColor,
     this.foregroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -218,10 +219,10 @@ class AuthButton extends StatelessWidget {
 /// Material Design snackbar for displaying error messages.
 ///
 class ErrorSnackbar extends SnackBar {
-  ErrorSnackbar({
+  ErrorSnackbar({super.key, 
     required String message,
-    Duration duration = const Duration(seconds: 4),
-    SnackBarAction? action,
+    super.duration,
+    super.action,
   }) : super(
     content: Row(
       children: [
@@ -242,8 +243,6 @@ class ErrorSnackbar extends SnackBar {
       ],
     ),
     backgroundColor: Colors.red[600],
-    duration: duration,
-    action: action,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     ),
@@ -258,9 +257,9 @@ class ErrorSnackbar extends SnackBar {
 /// Material Design snackbar for displaying success messages.
 ///
 class SuccessSnackbar extends SnackBar {
-  SuccessSnackbar({
+  SuccessSnackbar({super.key, 
     required String message,
-    Duration duration = const Duration(seconds: 3),
+    super.duration = const Duration(seconds: 3),
   }) : super(
     content: Row(
       children: [
@@ -281,7 +280,6 @@ class SuccessSnackbar extends SnackBar {
       ],
     ),
     backgroundColor: Colors.green[600],
-    duration: duration,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     ),
@@ -300,9 +298,9 @@ class DividerWithText extends StatelessWidget {
   final String text;
 
   const DividerWithText({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

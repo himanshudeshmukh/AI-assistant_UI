@@ -14,6 +14,7 @@
 ///   onPressed: () => navigateToSignup(),
 /// )
 /// ```
+library;
 
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
@@ -50,7 +51,7 @@ class SecondaryButton extends StatefulWidget {
   final Color loadingIndicatorColor;
 
   const SecondaryButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.isLoading = false,
@@ -60,7 +61,7 @@ class SecondaryButton extends StatefulWidget {
     this.textColor = AppColors.primaryOrange,
     this.backgroundColor = AppColors.surfaceColor,
     this.loadingIndicatorColor = AppColors.primaryOrange,
-  }) : super(key: key);
+  });
 
   @override
   State<SecondaryButton> createState() => _SecondaryButtonState();

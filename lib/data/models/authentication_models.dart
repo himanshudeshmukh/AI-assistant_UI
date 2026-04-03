@@ -10,6 +10,7 @@
 ///
 /// NOTE: Using manual JSON serialization (no code generation needed!)
 /// All toJson() and fromJson() methods are implemented directly.
+library;
 
 // ==================== Login Models ====================
 

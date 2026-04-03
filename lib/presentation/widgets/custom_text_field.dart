@@ -23,6 +23,7 @@
 ///   controller: _emailController,
 /// )
 /// ```
+library;
 
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
@@ -71,7 +72,7 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.hint,
     required this.controller,
     this.validator,
@@ -85,7 +86,7 @@ class CustomTextField extends StatefulWidget {
     this.onSuffixIconTap,
     this.onChanged,
     this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTextField> createState() => CustomTextFieldState ();

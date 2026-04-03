@@ -5,6 +5,7 @@
 /// are defined here with proper naming conventions.
 ///
 /// Usage: AppColors.primaryOrange, AppColors.backgroundColor, etc.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -83,4 +84,41 @@ class AppColors {
 
   /// Primary gradient end
   static const Color gradientEnd = primaryOrange;
+
+  // ==================== Victus-style auth (hero) screens ====================
+  /// Dark hero background behind image header
+  static const Color authHeroBackground = Color(0xFF0A0A0A);
+
+  /// Gold accent used in hero headers and links
+  static const Color authHeroAccent = Color(0xFFC8A97E);
+
+  /// White card surface under the hero
+  static const Color authCardSurface = Color(0xFFFFFFFF);
+
+  /// Primary text on the auth card (near-black)
+  static const Color authTextOnCard = Color(0xFF0A0A0A);
+
+  /// Secondary / body text on auth card
+  static const Color authTextSecondary = Color(0xFF8A8A8A);
+
+  /// Muted helper text
+  static const Color authTextMuted = Color(0xFFB0B0B0);
+
+  /// Input borders on auth card
+  static const Color authInputBorder = Color(0xFFE5E5E5);
+
+  /// Input prefix / suffix icons
+  static const Color authInputIcon = Color(0xFFBFBFBF);
+
+  /// Placeholder text in auth fields
+  static const Color authPlaceholder = Color(0xFFCCCCCC);
+
+  /// Divider on auth card
+  static const Color authDivider = Color(0xFFEBEBEB);
+
+  /// Social button label color
+  static const Color authSocialLabel = Color(0xFF3A3A3A);
+
+  /// Filled primary CTA on auth card (dark pill)
+  static const Color authPrimaryButton = Color(0xFF0A0A0A);
 }

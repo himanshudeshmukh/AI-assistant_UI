@@ -5,11 +5,16 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Text(
-          "Profile Screen",
-          style: Theme.of(context).textTheme.headlineMedium,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Center(
+          child: Text(
+            'Profile',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                ),
+          ),
         ),
       ),
     );

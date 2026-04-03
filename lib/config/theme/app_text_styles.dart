@@ -5,6 +5,7 @@
 /// to update typography globally.
 ///
 /// Usage: AppTextStyles.headingLarge, AppTextStyles.bodyMedium, etc.
+library;
 
 import 'package:flutter/material.dart';
 import 'app_colors.dart';

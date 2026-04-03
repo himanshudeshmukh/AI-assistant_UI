@@ -9,9 +9,11 @@
 /// - Loading indicator
 ///
 /// Following: Animation best practices, Modern design, Tech aesthetic
+library;
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../../config/constants/constants.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
 
@@ -24,7 +26,7 @@ import '../../config/theme/app_text_styles.dart';
 /// - App branding
 /// - Loading indicator
 class SplashScreenRobot extends StatefulWidget {
-  const SplashScreenRobot({Key? key}) : super(key: key);
+  const SplashScreenRobot({super.key});
 
   @override
   State<SplashScreenRobot> createState() => _SplashScreenRobotState();
@@ -127,7 +129,7 @@ class _SplashScreenRobotState extends State<SplashScreenRobot>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Colors.black,
       body: _buildBody(),
     );
   }
@@ -163,17 +165,17 @@ class _SplashScreenRobotState extends State<SplashScreenRobot>
     );
   }
 
-  /// Builds the background gradient with tech aesthetic
+  /// Solid dark background (no image / heavy gradient).
   Widget _buildBackgroundGradient() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
+        color: Colors.black,
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
           colors: [
-            Colors.blue.withOpacity(0.1),
-            AppColors.primaryOrange.withOpacity(0.05),
-            Colors.cyan.withOpacity(0.08),
+            Color(0xFF1A1A1A),
+            Colors.black,
           ],
         ),
       ),
@@ -256,19 +258,19 @@ class _SplashScreenRobotState extends State<SplashScreenRobot>
       child: Column(
         children: [
           Text(
-            'Admiro.ai',
+            Constants.appName,
             style: AppTextStyles.headingLarge.copyWith(
               fontSize: 36,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: Colors.white,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            'Your AI Fashion Assistant',
+            'Your AI fashion assistant',
             style: AppTextStyles.bodySmall.copyWith(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: Colors.white70,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -298,7 +300,7 @@ class _SplashScreenRobotState extends State<SplashScreenRobot>
             child: Container(
               width: 8,
               height: 8,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.primaryOrange,
               ),

@@ -1,50 +1,38 @@
-/// [LoginScreen] - Login screen with custom bubble design
-///
-/// ✅ BUBBLE FIX APPLIED:
-/// - Added top padding: 220px (matches your bubble's negative offsets)
-/// - Bubble extends 180px above screen, so 220px padding gives 40px clear space
-/// - Content never overlaps with bubble design
-///
-/// Your BubbleDesign uses:
-///   - Top bubble: top: -60
-///   - Large bubble: top: -180 (max offset)
-///   - Solution: top: 220 padding = 40px clear space ✅
+/// Login screen — Victus-style hero layout with existing [ApiClient] integration.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:profiler/presentation/screens/splash_screen.dart';
+
 import '../../../config/constants/constants.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../config/theme/app_dimensions.dart';
-import '../../../config/theme/app_text_styles.dart';
 import '../../../config/validators/form_validators.dart';
 import '../../../data/network/api_client.dart';
-import '../../widgets/bubble_design.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/primary_button.dart';
-import '../home/home_screen.dart';
-import '../navigation/main_navigation.dart';
+import '../../widgets/auth_hero_primary_button.dart';
+import '../../widgets/auth_hero_text_field.dart';
+import '../../widgets/hero_section.dart';
+import '../../widgets/social_auth_row.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => LoginScreenState();
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  // ==================== Form Controllers ====================
+  static const double _heroHeight = 380;
+  static const double _cardOverlap = 24;
+
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
-  late GlobalKey<CustomTextFieldState> _emailFieldKey;
-  late GlobalKey<CustomTextFieldState> _passwordFieldKey;
+  late GlobalKey<AuthHeroTextFieldState> _emailFieldKey;
+  late GlobalKey<AuthHeroTextFieldState> _passwordFieldKey;
 
-  // ==================== State Variables ====================
   bool _obscurePassword = true;
   bool _isLoading = false;
   String? _errorMessage;
   String? _successMessage;
 
-  // ==================== API Client ====================
   late ApiClient _apiClient;
 
   @override
@@ -52,8 +40,8 @@ class LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    _emailFieldKey = GlobalKey<CustomTextFieldState>();
-    _passwordFieldKey = GlobalKey<CustomTextFieldState>();
+    _emailFieldKey = GlobalKey<AuthHeroTextFieldState>();
+    _passwordFieldKey = GlobalKey<AuthHeroTextFieldState>();
     _apiClient = ApiClient.instance;
   }
 
@@ -64,45 +52,30 @@ class LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // ==================== Form Validation ====================
   bool _validateForm() {
     bool isValid = true;
     setState(() => _errorMessage = null);
 
-    final emailError = _emailFieldKey.currentState?.validateField();
-    if (emailError != null) {
+    if (_emailFieldKey.currentState?.validateField() != null) {
       isValid = false;
     }
-
-    final passwordError = _passwordFieldKey.currentState?.validateField();
-    if (passwordError != null) {
+    if (_passwordFieldKey.currentState?.validateField() != null) {
       isValid = false;
     }
-
     return isValid;
   }
 
-  // ==================== API Communication ====================
   Future<void> _handleLogin() async {
-    print('========== LOGIN BUTTON CLICKED ==========');
-    print('Email: ${_emailController.text.trim()}');
-    print('========================================');
-
     setState(() {
       _errorMessage = null;
       _successMessage = null;
     });
 
-    if (!_validateForm()) {
-      print('❌ Form validation failed');
-      return;
-    }
+    if (!_validateForm()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      print('📤 Sending login request to API...');
-
       final response = await _apiClient.login(
         email: _emailController.text.trim(),
         password: _passwordController.text,
@@ -110,11 +83,7 @@ class LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      print('📥 Received response: ${response.success}');
-
       if (response.success && response.data != null) {
-        print('✅ Login successful!');
-
         _apiClient.setAuthToken(response.data!.token);
         _emailFieldKey.currentState?.clearError();
         _passwordFieldKey.currentState?.clearError();
@@ -124,30 +93,26 @@ class LoginScreenState extends State<LoginScreen> {
           _isLoading = false;
         });
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Welcome ${response.data!.username}!'),
-              backgroundColor: AppColors.successColor,
-              duration: const Duration(seconds: 2),
-            ),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Welcome ${response.data!.username}!'),
+            backgroundColor: AppColors.successColor,
+            duration: const Duration(seconds: 2),
+          ),
+        );
 
         await Future.delayed(const Duration(milliseconds: 500));
-
         if (mounted) {
           Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {
-        print('❌ Login failed: ${response.message}');
         setState(() {
-          _errorMessage = response.message ?? 'Login failed. Please try again.';
+          _errorMessage =
+              response.message ?? 'Login failed. Please try again.';
           _isLoading = false;
         });
       }
     } catch (e) {
-      print('❌ Exception: $e');
       if (mounted) {
         setState(() {
           _errorMessage = 'Connection error: ${e.toString()}';
@@ -157,258 +122,253 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // ==================== Navigation ====================
   void _navigateToSignup() {
-    print('Navigating to signup screen...');
     Navigator.of(context).pushNamed('/signup');
   }
 
   void _navigateToForgotPassword() {
-    print('Navigating to forgot password screen...');
+    Navigator.of(context).pushNamed('/forgot-password');
+  }
+
+  void _handleGoogleLogin() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Forgot password feature coming soon')),
+      const SnackBar(content: Text('Google sign-in not yet implemented')),
     );
   }
 
-  void _handleFacebookLogin() {
-    print('Facebook login clicked');
+  void _handleAppleLogin() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Facebook login not yet implemented')),
-    );
-  }
-
-  void _handleGmailLogin() {
-    print('Gmail login clicked');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Gmail login not yet implemented')),
+      const SnackBar(content: Text('Apple sign-in not yet implemented')),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      body: BubbleDesign(
-        // ✅ Your custom BubbleDesign with negative top positioning
-        child: SingleChildScrollView(
-          child: Padding(
-            // ✅ BUBBLE FIX: top: 220 padding
-            // Your bubbles extend 180px above screen (top: -180)
-            // 220px padding - 180px bubble offset = 40px clear space ✅
-            padding: const EdgeInsets.only(
-              top: 220,
-              left: AppDimensions.screenPaddingHorizontal,
-              right: AppDimensions.screenPaddingHorizontal,
-            ),
-            child: Column(
-              children: [
-
-                // ==================== Logo ====================
-                Center(
-                  child: Column(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: _heroHeight,
+            child: HeroSection(
+              height: _heroHeight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
+                      Icon(
+                        Icons.auto_awesome,
+                        size: 20,
+                        color: AppColors.authHeroAccent,
+                      ),
+                      const SizedBox(width: 8),
                       Text(
-                        Constants.appName,
-                        style: AppTextStyles.headingLarge.copyWith(
-                          color: AppColors.primaryOrange,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                      SizedBox(height: AppDimensions.paddingS),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Form Fields ====================
-                // ==================== Email Input ====================
-                CustomTextField(
-                  key: _emailFieldKey,
-                  hint: 'Enter your email',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: FormValidators.validateEmail,
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Password Input ====================
-                CustomTextField(
-                  key: _passwordFieldKey,
-                  hint: 'Enter your password',
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  validator: FormValidators.validatePassword,
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    child: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Error Message ====================
-                if (_errorMessage != null && _errorMessage!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppDimensions.paddingL,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppDimensions.paddingM),
-                      decoration: BoxDecoration(
-                        color: AppColors.errorLight,
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.borderRadiusM,
-                        ),
-                      ),
-                      child: Text(
-                        _errorMessage!,
-                        style: AppTextStyles.errorText,
-                      ),
-                    ),
-                  ),
-
-                // ==================== Success Message ====================
-                if (_successMessage != null && _successMessage!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppDimensions.paddingL,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppDimensions.paddingM),
-                      decoration: BoxDecoration(
-                        color: AppColors.successColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.borderRadiusM,
-                        ),
-                        border: Border.all(
-                          color: AppColors.successColor,
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        _successMessage!,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.successColor,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                // ==================== Login Button ====================
-                PrimaryButton(
-                  text: 'Login',
-                  isLoading: _isLoading,
-                  // onPressed: _isLoading ? null : _handleLogin,
-                  onPressed: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (_) => MainNavigation()));
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => SplashScreenRobot()));
-                  }
-                ),
-
-
-                SizedBox(height: AppDimensions.paddingM),
-
-                // ==================== Forgot Password ====================
-                Center(
-                  child: GestureDetector(
-                    onTap: _navigateToForgotPassword,
-                    child: Text(
-                      'Forgot Password ?',
-                      style: AppTextStyles.linkSmall,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingM),
-
-                // ==================== Divider ====================
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.dividerColor,
-                        thickness: AppDimensions.dividerThickness,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.paddingM,
-                      ),
-                      child: Text(
-                        'or',
-                        style: AppTextStyles.bodyMedium,
-                      ),
-                    ),
-                    const Expanded(
-                      child: Divider(
-                        color: AppColors.dividerColor,
-                        thickness: AppDimensions.dividerThickness,
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: AppDimensions.paddingM),
-
-                // ==================== Social Login ====================
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      color: AppColors.facebookBlue,
-                      onPressed: _handleFacebookLogin,
-                      icon: const Icon(Icons.facebook),
-                      iconSize: 48,
-                    ),
-                    SizedBox(width: AppDimensions.paddingL),
-                    IconButton(
-                      color: Colors.red,
-                      onPressed: _handleGmailLogin,
-                      icon: const Icon(Icons.mail_outlined),
-                      iconSize: 48,
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Signup Link ====================
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account ? ",
-                        style: AppTextStyles.bodyLarge,
-                      ),
-                      GestureDetector(
-                        onTap: _navigateToSignup,
-                        child: Text(
-                          'Register',
-                          style: AppTextStyles.linkSmall,
+                        'AI-POWERED STYLE',
+                        style: TextStyle(
+                          color: AppColors.authHeroAccent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 3,
                         ),
                       ),
                     ],
                   ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    Constants.appName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Premium Lifestyle Ecosystem',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+          Positioned(
+            top: _heroHeight - _cardOverlap,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppColors.authCardSurface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                padding: EdgeInsets.fromLTRB(24, 32, 24, 24 + bottomInset),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Welcome back',
+                      style: TextStyle(
+                        color: AppColors.authTextOnCard,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Sign in to continue your style journey',
+                      style: TextStyle(
+                        color: AppColors.authTextSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    AuthHeroTextField(
+                      key: _emailFieldKey,
+                      label: 'Email',
+                      placeholder: 'you@example.com',
+                      prefixIcon: Icons.mail_outline,
+                      controller: _emailController,
+                      validator: FormValidators.validateEmail,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'PASSWORD',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.2,
+                            color: AppColors.authTextOnCard,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _navigateToForgotPassword,
+                          child: const Text(
+                            'Forgot?',
+                            style: TextStyle(
+                              color: AppColors.authHeroAccent,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    AuthHeroTextField(
+                      key: _passwordFieldKey,
+                      label: '',
+                      placeholder: 'Enter password',
+                      prefixIcon: Icons.lock_outline,
+                      controller: _passwordController,
+                      isPassword: true,
+                      obscureText: _obscurePassword,
+                      onToggleVisibility: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      validator: FormValidators.validatePassword,
+                    ),
+                    if (_errorMessage != null && _errorMessage!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.errorLight,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              color: AppColors.errorColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (_successMessage != null &&
+                        _successMessage!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.successColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.successColor),
+                          ),
+                          child: Text(
+                            _successMessage!,
+                            style: const TextStyle(
+                              color: AppColors.successColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 24),
+                    AuthHeroPrimaryButton(
+                      text: 'Sign In',
+                      isLoading: _isLoading,
+                      onPressed: _isLoading ? null : _handleLogin,
+                    ),
+                    const SizedBox(height: 20),
+                    SocialAuthRow(
+                      onGoogle: _handleGoogleLogin,
+                      onApple: _handleAppleLogin,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'New to ${Constants.appName}? ',
+                          style: const TextStyle(
+                            color: AppColors.authTextSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _navigateToSignup,
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              color: AppColors.authHeroAccent,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

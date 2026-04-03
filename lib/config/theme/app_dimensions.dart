@@ -9,6 +9,7 @@
 /// - Card padding: 20px → 16px
 ///
 /// Usage: AppDimensions.paddingXL, AppDimensions.borderRadiusLarge, etc.
+library;
 
 class AppDimensions {
   // Private constructor to prevent instantiation

@@ -480,6 +480,8 @@
 /// - Easy to switch from dummy to backend data
 ///
 /// Following: Clean architecture, Responsive design, Professional UX
+library;
+
 
 import 'package:flutter/material.dart';
 import '../../../config/theme/app_colors.dart';
@@ -495,7 +497,7 @@ import '../../../data/models/outfit_model.dart';
 /// - Scrollable list of style recommendations with asset images
 /// - Designed for easy backend integration
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -546,7 +548,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Colors.black,
       body: _buildBody(),
     );
   }
@@ -554,16 +556,19 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Builds the body content
   Widget _buildBody() {
     if (_isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(
-            AppColors.primaryOrange,
+            AppColors.authHeroAccent,
           ),
         ),
       );
     }
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -571,19 +576,19 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildGreeting(),
 
           // ==================== Featured Outfit ====================
-          SizedBox(height: AppDimensions.paddingL),
+          const SizedBox(height: AppDimensions.paddingL),
           _buildFeaturedOutfit(),
 
           // ==================== Style Picks Header ====================
-          SizedBox(height: AppDimensions.paddingXXL),
+          const SizedBox(height: AppDimensions.paddingXXL),
           _buildStylePicksHeader(),
 
           // ==================== Outfit Cards (Scrollable) ====================
-          SizedBox(height: AppDimensions.paddingL),
+          const SizedBox(height: AppDimensions.paddingL),
           _buildOutfitCardsList(),
 
           // ==================== Bottom Spacing ====================
-          SizedBox(height: AppDimensions.paddingXXL),
+          const SizedBox(height: AppDimensions.paddingXXL),
         ],
       ),
     );
@@ -607,16 +612,16 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 DummyOutfitData.getGreeting('Sarah'),
                 style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                  color: Colors.white70,
                   fontSize: 14,
                 ),
               ),
             ],
           ),
           // Dropdown indicator
-          Icon(
+          const Icon(
             Icons.keyboard_arrow_down,
-            color: AppColors.textSecondary,
+            color: Colors.white54,
             size: 20,
           ),
         ],
@@ -624,121 +629,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Builds the featured outfit card with asset image
+  /// Featured outfit — dark card, no background image.
   Widget _buildFeaturedOutfit() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppDimensions.paddingXL,
       ),
       child: Container(
-        height:  MediaQuery.of(context).size.height/5,
-        width:  MediaQuery.of(context).size.height/1,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.purple.withOpacity(0.15),
-              Colors.pink.withOpacity(0.1),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height / 5.5,
         ),
-        child: Stack(
-          children: [
-            // ==================== Background Image (Asset) ====================
-            Positioned(
-              right: -50,
-              top: -50,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-                child: Image.asset(
-                  _featuredOutfit.assetImage,
-                  width: 400,
-                  height: 400,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.primaryOrange.withOpacity(0.2),
-                      child: const Icon(Icons.image),
-                    );
-                  },
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color(0xFF141414),
+          borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
+          border: Border.all(color: Colors.white.withOpacity(0.08)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimensions.paddingXL),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _featuredOutfit.title,
+                style: AppTextStyles.headingLarge.copyWith(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-
-            // ==================== Content ====================
-            Padding(
-              padding: const EdgeInsets.all(AppDimensions.paddingXL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Title
-                  Text(
-                    _featuredOutfit.title,
-                    style: AppTextStyles.headingLarge.copyWith(
-                      color: const Color(0xFF1a1a2e),
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  // Description and button
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _featuredOutfit.description,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 16,
-                        ),
-                      ),
-
-                      SizedBox(height: AppDimensions.paddingL),
-
-                      // // View Outfit Button
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     debugPrint('View outfit tapped');
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Colors.white,
-                      //     elevation: 0,
-                      //     padding: const EdgeInsets.symmetric(
-                      //       horizontal: AppDimensions.paddingXL,
-                      //       vertical: AppDimensions.paddingM,
-                      //     ),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(50),
-                      //     ),
-                      //   ),
-                      //   child: Row(
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     children: [
-                      //       Text(
-                      //         'View Outfit',
-                      //         style: AppTextStyles.bodyMedium.copyWith(
-                      //           color: const Color(0xFF1a1a2e),
-                      //           fontWeight: FontWeight.w600,
-                      //         ),
-                      //       ),
-                      //       SizedBox(width: AppDimensions.paddingS),
-                      //       const Icon(
-                      //         Icons.arrow_forward,
-                      //         color: Color(0xFF1a1a2e),
-                      //         size: 18,
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ],
+              const SizedBox(height: AppDimensions.paddingM),
+              Text(
+                _featuredOutfit.description,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.white70,
+                  fontSize: 15,
+                  height: 1.4,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -756,195 +687,78 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             'Style Picks for You',
             style: AppTextStyles.headingSmall.copyWith(
-              color: AppColors.textPrimary,
+              color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.w600,
             ),
           ),
-          Icon(
+          const Icon(
             Icons.arrow_forward,
-            color: AppColors.textSecondary,
+            color: Colors.white54,
           ),
         ],
       ),
     );
   }
 
-  /// Builds the scrollable list of outfit cards
-  ///
-  /// Uses ListView.builder for efficient rendering
-  /// Easy to switch to backend API data
+  /// Outfit cards as a single scroll (no nested ListView physics).
   Widget _buildOutfitCardsList() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppDimensions.paddingXL,
       ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _outfits.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: AppDimensions.paddingL,
+      child: Column(
+        children: [
+          for (final outfit in _outfits)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppDimensions.paddingL),
+              child: _buildOutfitCard(outfit),
             ),
-            child: _buildOutfitCard(_outfits[index]),
-          );
-        },
+        ],
       ),
     );
   }
 
-  /// Builds a single outfit card with asset image
-  ///
-  /// [outfit] - The outfit to display
+  /// Single outfit row — dark surface, no image.
   Widget _buildOutfitCard(OutfitModel outfit) {
     return GestureDetector(
       onTap: () {
         debugPrint('Tapped outfit: ${outfit.title}');
       },
       child: Container(
-        height: 250,
+        constraints: const BoxConstraints(minHeight: 120),
         decoration: BoxDecoration(
+          color: const Color(0xFF141414),
           borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: _getCardGradientColors(outfit.category ?? ''),
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.06)),
         ),
-        child: Stack(
-          children: [
-            // ==================== Background Image (Asset) ====================
-            Positioned(
-              right: -30,
-              top: -30,
-              bottom: -30,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-                child: Image.asset(
-                  outfit.assetImage,
-                  width: 280,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 280,
-                      color: AppColors.primaryOrange.withOpacity(0.2),
-                      child: const Icon(Icons.image),
-                    );
-                  },
+        child: Padding(
+          padding: const EdgeInsets.all(AppDimensions.paddingL),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                outfit.title,
+                style: AppTextStyles.headingSmall.copyWith(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-
-            // ==================== Content ====================
-            Padding(
-              padding: const EdgeInsets.all(AppDimensions.paddingL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Title
-                  Text(
-                    outfit.title,
-                    style: AppTextStyles.headingSmall.copyWith(
-                      color: const Color(0xFF1a1a2e),
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  // Description and button
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        outfit.description,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                          fontSize: 13,
-                        ),
-                      ),
-
-                      SizedBox(height: AppDimensions.paddingL),
-
-                      // // View Outfit Button
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     debugPrint('View ${outfit.title} tapped');
-                      //   },
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Colors.white,
-                      //     elevation: 0,
-                      //     padding: const EdgeInsets.symmetric(
-                      //       horizontal: AppDimensions.paddingL,
-                      //       vertical: AppDimensions.paddingS,
-                      //     ),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(50),
-                      //     ),
-                      //   ),
-                      //   child: Row(
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     children: [
-                      //       Text(
-                      //         'View Outfit',
-                      //         style: AppTextStyles.bodySmall.copyWith(
-                      //           color: const Color(0xFF1a1a2e),
-                      //           fontWeight: FontWeight.w600,
-                      //         ),
-                      //       ),
-                      //       SizedBox(width: AppDimensions.paddingXS),
-                      //       const Icon(
-                      //         Icons.arrow_forward,
-                      //         color: Color(0xFF1a1a2e),
-                      //         size: 14,
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ],
+              const SizedBox(height: AppDimensions.paddingS),
+              Text(
+                outfit.description,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: Colors.white60,
+                  fontSize: 13,
+                  height: 1.35,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  /// Gets gradient colors based on outfit category
-  ///
-  /// [category] - The outfit category
-  /// Returns appropriate gradient colors
-  List<Color> _getCardGradientColors(String category) {
-    switch (category.toLowerCase()) {
-      case 'casual':
-        return [
-          Colors.amber.withOpacity(0.15),
-          Colors.orange.withOpacity(0.1),
-        ];
-      case 'professional':
-        return [
-          Colors.pink.withOpacity(0.15),
-          Colors.red.withOpacity(0.1),
-        ];
-      case 'athletic':
-        return [
-          Colors.purple.withOpacity(0.15),
-          Colors.blue.withOpacity(0.1),
-        ];
-      case 'formal':
-        return [
-          Colors.blue.withOpacity(0.15),
-          Colors.indigo.withOpacity(0.1),
-        ];
-      default:
-        return [
-          Colors.grey.withOpacity(0.15),
-          Colors.blueGrey.withOpacity(0.1),
-        ];
-    }
   }
 }

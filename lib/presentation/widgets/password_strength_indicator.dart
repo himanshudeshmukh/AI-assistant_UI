@@ -1,6 +1,7 @@
 /// lib/presentation/widgets/password_strength_indicator.dart
 ///
 /// Visual indicator for password strength with requirements checklist.
+library;
 
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,9 @@ class PasswordStrengthIndicator extends StatelessWidget {
   final String password;
 
   const PasswordStrengthIndicator({
-    Key? key,
+    super.key,
     required this.password,
-  }) : super(key: key);
+  });
 
   /// Calculates password strength (0-4).
   int _calculateStrength() {

@@ -5,11 +5,16 @@ class GenerateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Center(
-        child: Text(
-          "Generate Outfit Screen",
-          style: Theme.of(context).textTheme.headlineMedium,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Center(
+          child: Text(
+            'Generate outfit',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Colors.white,
+                ),
+          ),
         ),
       ),
     );

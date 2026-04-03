@@ -186,6 +186,8 @@
 /// Designed to work with both dummy data and backend API responses.
 ///
 /// Following: Data class pattern, Immutability, Serialization ready
+library;
+
 
 /// Outfit data model with asset image support
 class OutfitModel {
@@ -288,7 +290,7 @@ class DummyOutfitData {
   /// ```
   static List<OutfitModel> getOutfits() {
     return [
-      OutfitModel(
+      const OutfitModel(
         id: '1',
         title: 'Coffee Date',
         description: 'Casual and comfortable look',
@@ -296,7 +298,7 @@ class DummyOutfitData {
         category: 'Casual',
         rating: 4.5,
       ),
-      OutfitModel(
+      const OutfitModel(
         id: '2',
         title: 'Office Meeting',
         description: 'Professional and polished style',
@@ -304,7 +306,7 @@ class DummyOutfitData {
         category: 'Professional',
         rating: 4.8,
       ),
-      OutfitModel(
+      const OutfitModel(
         id: '3',
         title: 'Gym Session',
         description: 'Comfort and performance',
@@ -312,7 +314,7 @@ class DummyOutfitData {
         category: 'Athletic',
         rating: 4.3,
       ),
-      OutfitModel(
+      const OutfitModel(
         id: '4',
         title: 'Evening Date',
         description: 'Elegant and sophisticated',
@@ -320,7 +322,7 @@ class DummyOutfitData {
         category: 'Formal',
         rating: 4.9,
       ),
-      OutfitModel(
+      const OutfitModel(
         id: '5',
         title: 'Weekend Shopping',
         description: 'Relaxed and stylish',
@@ -328,7 +330,7 @@ class DummyOutfitData {
         category: 'Casual',
         rating: 4.2,
       ),
-      OutfitModel(
+      const OutfitModel(
         id: '6',
         title: 'Beach Day',
         description: 'Fresh and breezy vibes',
@@ -341,7 +343,7 @@ class DummyOutfitData {
 
   /// Get "Today's Outfit" featured outfit with asset image
   static OutfitModel getTodaysOutfit() {
-    return OutfitModel(
+    return const OutfitModel(
       id: 'featured',
       title: "Today's Outfit",
       description: 'Perfect for a sunny day.',

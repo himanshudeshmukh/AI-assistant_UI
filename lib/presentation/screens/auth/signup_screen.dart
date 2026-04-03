@@ -1,117 +1,101 @@
-/// [SignupScreen] - Signup screen with custom bubble design
-///
-/// ✅ BUBBLE FIX APPLIED:
-/// - Added top padding: 220px (matches your bubble's negative offsets)
-/// - Bubble extends 180px above screen, so 220px padding gives 40px clear space
-/// - Content never overlaps with bubble design
-///
-/// Your BubbleDesign uses:
-///   - Top bubble: top: -60
-///   - Large bubble: top: -180 (max offset)
-///   - Solution: top: 220 padding = 40px clear space ✅
+/// Signup screen — Victus-style hero layout with existing [ApiClient] integration.
+library;
 
 import 'package:flutter/material.dart';
-import 'package:profiler/config/constants/constants.dart';
+
+import '../../../config/constants/constants.dart';
 import '../../../config/theme/app_colors.dart';
-import '../../../config/theme/app_dimensions.dart';
-import '../../../config/theme/app_text_styles.dart';
 import '../../../config/validators/form_validators.dart';
 import '../../../data/network/api_client.dart';
-import '../../widgets/bubble_design.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/primary_button.dart';
+import '../../widgets/auth_hero_primary_button.dart';
+import '../../widgets/auth_hero_text_field.dart';
+import '../../widgets/hero_section.dart';
+import '../../widgets/social_auth_row.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // ==================== Form Controllers ====================
-  late TextEditingController _usernameController;
+  static const double _heroHeight = 260;
+  static const double _cardOverlap = 24;
+
+  late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
-  late GlobalKey<FormState> _formKey;
 
-  // ==================== State Variables ====================
+  late GlobalKey<AuthHeroTextFieldState> _nameFieldKey;
+  late GlobalKey<AuthHeroTextFieldState> _emailFieldKey;
+  late GlobalKey<AuthHeroTextFieldState> _passwordFieldKey;
+  late GlobalKey<AuthHeroTextFieldState> _confirmFieldKey;
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
   String? _errorMessage;
-  String? _successMessage;
 
-  // ==================== API Client ====================
   late ApiClient _apiClient;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController();
+    _nameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
-    _formKey = GlobalKey<FormState>();
+    _nameFieldKey = GlobalKey<AuthHeroTextFieldState>();
+    _emailFieldKey = GlobalKey<AuthHeroTextFieldState>();
+    _passwordFieldKey = GlobalKey<AuthHeroTextFieldState>();
+    _confirmFieldKey = GlobalKey<AuthHeroTextFieldState>();
     _apiClient = ApiClient.instance;
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  // ==================== Form Validation ====================
+  /// Spaces → underscores so [FormValidators.validateUsername] can run on API username.
+  String _usernameForApi(String fullName) {
+    return fullName.trim().replaceAll(RegExp(r'\s+'), '_');
+  }
+
+  String? _validateName(String value) {
+    final t = value.trim();
+    return FormValidators.validateRequired(t, 'Full name') ??
+        FormValidators.validateMinLength(t, 2, 'Full name') ??
+        FormValidators.validateUsername(_usernameForApi(value));
+  }
+
   bool _validateForm() {
-    final usernameError =
-    FormValidators.validateUsername(_usernameController.text);
-    final emailError = FormValidators.validateEmail(_emailController.text);
-    final passwordError =
-    FormValidators.validatePassword(_passwordController.text);
-    final confirmPasswordError = FormValidators.validateMatch(
-      _passwordController.text,
-      _confirmPasswordController.text,
-      'Passwords',
-    );
+    setState(() => _errorMessage = null);
 
-    final error = usernameError ??
-        emailError ??
-        passwordError ??
-        confirmPasswordError;
-
-    if (error != null) {
-      setState(() {
-        _errorMessage = error;
-      });
-      return false;
-    }
+    if (_nameFieldKey.currentState?.validateField() != null) return false;
+    if (_emailFieldKey.currentState?.validateField() != null) return false;
+    if (_passwordFieldKey.currentState?.validateField() != null) return false;
+    if (_confirmFieldKey.currentState?.validateField() != null) return false;
 
     return true;
   }
 
-  // ==================== API Communication ====================
   Future<void> _handleSignup() async {
-    setState(() {
-      _errorMessage = null;
-      _successMessage = null;
-    });
+    setState(() => _errorMessage = null);
 
-    if (!_validateForm()) {
-      return;
-    }
+    if (!_validateForm()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final response = await _apiClient.signup(
-        username: _usernameController.text.trim(),
+        username: _usernameForApi(_nameController.text),
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
@@ -121,20 +105,18 @@ class _SignupScreenState extends State<SignupScreen> {
       if (response.success && response.data != null) {
         _apiClient.setAuthToken(response.data!.token);
 
-        setState(() {
-          _successMessage = response.message;
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
 
-        await Future.delayed(const Duration(milliseconds: 500));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully!'),
+            backgroundColor: AppColors.successColor,
+          ),
+        );
 
+        await Future.delayed(const Duration(milliseconds: 400));
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Account created successfully!'),
-              backgroundColor: AppColors.successColor,
-            ),
-          );
+          Navigator.of(context).pushReplacementNamed('/login');
         }
       } else {
         setState(() {
@@ -152,192 +134,246 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  // ==================== Navigation ====================
-  void _navigateToLogin() {
-    Navigator.pop(context);
+  void _handleGoogleLogin() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Google sign-in not yet implemented')),
+    );
+  }
+
+  void _handleAppleLogin() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Apple sign-in not yet implemented')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      body: BubbleDesign(
-        // ✅ Your custom BubbleDesign with negative top positioning
-        child: SingleChildScrollView(
-          child: Padding(
-            // ✅ BUBBLE FIX: top: 220 padding
-            // Your bubbles extend 180px above screen (top: -180)
-            // 220px padding - 180px bubble offset = 40px clear space ✅
-            padding: const EdgeInsets.only(
-              top: 220,
-              left: AppDimensions.screenPaddingHorizontal,
-              right: AppDimensions.screenPaddingHorizontal,
-            ),
-            child: Column(
-              children: [
-                // ==================== Logo ====================
-                Center(
-                  child: Text(
-                    Constants.appName,
-                    style: AppTextStyles.headingLarge.copyWith(
-                      color: AppColors.primaryOrange,
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Email Input ====================
-                CustomTextField(
-                  hint: 'Enter your email',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: FormValidators.validateEmail,
-                  onChanged: (_) {
-                    if (_errorMessage != null) {
-                      setState(() => _errorMessage = null);
-                    }
-                  },
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Username Input ====================
-                CustomTextField(
-                  hint: 'Enter your Phone Number',
-                  controller: _usernameController,
-                  validator: FormValidators.validateUsername,
-                  onChanged: (_) {
-                    if (_errorMessage != null) {
-                      setState(() => _errorMessage = null);
-                    }
-                  },
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Password Input ====================
-                CustomTextField(
-                  hint: 'Create a password',
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  validator: FormValidators.validatePassword,
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    child: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  onChanged: (_) {
-                    if (_errorMessage != null) {
-                      setState(() => _errorMessage = null);
-                    }
-                  },
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Confirm Password Input ====================
-                CustomTextField(
-                  hint: 'Confirm your password',
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirmPassword,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
-                    },
-                    child: Icon(
-                      _obscureConfirmPassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  onChanged: (_) {
-                    if (_errorMessage != null) {
-                      setState(() => _errorMessage = null);
-                    }
-                  },
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Error Message ====================
-                if (_errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppDimensions.paddingL,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(
-                        AppDimensions.paddingM,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.errorLight,
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.borderRadiusM,
-                        ),
-                      ),
-                      child: Text(
-                        _errorMessage!,
-                        style: AppTextStyles.errorText,
-                      ),
-                    ),
-                  ),
-
-                // ==================== Signup Button ====================
-                PrimaryButton(
-                  text: 'Register Now',
-                  isLoading: _isLoading,
-                  onPressed: _isLoading ? null : _handleSignup,
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-
-                // ==================== Login Link ====================
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: _heroHeight,
+            child: HeroSection(
+              height: _heroHeight,
+              onBack: () => Navigator.of(context).pop(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Text(
-                        'Already have an account ? ',
-                        style: AppTextStyles.bodyLarge,
+                      Icon(
+                        Icons.auto_awesome,
+                        size: 16,
+                        color: AppColors.authHeroAccent,
                       ),
-                      GestureDetector(
-                        onTap: _navigateToLogin,
-                        child: Text(
-                          'Login',
-                          style: AppTextStyles.linkSmall,
+                      const SizedBox(width: 8),
+                      Text(
+                        'JOIN ${Constants.appName.toUpperCase()}',
+                        style: TextStyle(
+                          color: AppColors.authHeroAccent,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 3,
                         ),
                       ),
                     ],
                   ),
-                ),
-
-                SizedBox(height: AppDimensions.paddingL),
-              ],
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Create Account',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Start your AI-powered style journey',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+          Positioned(
+            top: _heroHeight - _cardOverlap,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppColors.authCardSurface,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                padding: EdgeInsets.fromLTRB(24, 28, 24, 24 + bottomInset),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AuthHeroTextField(
+                      key: _nameFieldKey,
+                      label: 'Full Name',
+                      placeholder: 'Your full name',
+                      prefixIcon: Icons.person_outline,
+                      controller: _nameController,
+                      validator: _validateName,
+                    ),
+                    const SizedBox(height: 14),
+                    AuthHeroTextField(
+                      key: _emailFieldKey,
+                      label: 'Email',
+                      placeholder: 'you@example.com',
+                      prefixIcon: Icons.mail_outline,
+                      controller: _emailController,
+                      validator: FormValidators.validateEmail,
+                    ),
+                    const SizedBox(height: 14),
+                    AuthHeroTextField(
+                      key: _passwordFieldKey,
+                      label: 'Password',
+                      placeholder: 'Create password',
+                      prefixIcon: Icons.lock_outline,
+                      controller: _passwordController,
+                      isPassword: true,
+                      obscureText: _obscurePassword,
+                      onToggleVisibility: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      validator: FormValidators.validatePassword,
+                      hint: 'Min. 8 characters with a number & symbol',
+                    ),
+                    const SizedBox(height: 14),
+                    AuthHeroTextField(
+                      key: _confirmFieldKey,
+                      label: 'Confirm Password',
+                      placeholder: 'Re-enter password',
+                      prefixIcon: Icons.lock_outline,
+                      controller: _confirmPasswordController,
+                      isPassword: true,
+                      obscureText: _obscureConfirmPassword,
+                      onToggleVisibility: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        return FormValidators.validateMatch(
+                          value,
+                          _passwordController.text,
+                          'Passwords',
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        style: TextStyle(
+                          color: AppColors.authTextMuted,
+                          fontSize: 11,
+                          height: 1.5,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'By creating an account, you agree to our ',
+                          ),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: TextStyle(
+                              color: AppColors.authHeroAccent,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: TextStyle(
+                              color: AppColors.authHeroAccent,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_errorMessage != null && _errorMessage!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.errorLight,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              color: AppColors.errorColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                    AuthHeroPrimaryButton(
+                      text: 'Create Account',
+                      isLoading: _isLoading,
+                      onPressed: _isLoading ? null : _handleSignup,
+                    ),
+                    const SizedBox(height: 16),
+                    SocialAuthRow(
+                      onGoogle: _handleGoogleLogin,
+                      onApple: _handleAppleLogin,
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Already have an account? ',
+                          style: TextStyle(
+                            color: AppColors.authTextSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: AppColors.authHeroAccent,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

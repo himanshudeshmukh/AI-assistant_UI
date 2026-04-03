@@ -7,6 +7,7 @@
 /// - Conversion between models
 ///
 /// Following: Service pattern, Repository pattern, Separation of concerns
+library;
 
 import 'package:flutter/foundation.dart';
 import '../models/outfit_model.dart';

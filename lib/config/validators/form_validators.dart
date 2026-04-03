@@ -10,6 +10,7 @@
 /// but backend will perform final validation for security.
 ///
 /// Usage: FormValidators.validateEmail("email@example.com")
+library;
 
 class FormValidators {
   // Private constructor to prevent instantiation
