@@ -8,6 +8,7 @@
 
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyles {
   // Private constructor to prevent instantiation
@@ -159,4 +160,35 @@ class AppTextStyles {
     color: AppColors.textSecondary,
     letterSpacing: 1.5,
   );
+
+
+
+
+
+  // font styles from copy
+
+  // static const  title =  GoogleFonts.poppins(
+  //   fontSize: 20,
+  //   fontWeight: FontWeight.w600,
+  // fontWeight: FontWeight.bold,
+  // color: Colors.white,
+  // );
+
+
+  /// 🔥 HEADINGS
+  static final title = GoogleFonts.pacifico(
+    fontSize: 60,
+    fontWeight: FontWeight.w600,
+    color: Colors.white70
+  );
+
+  static const TextStyle subtitle = TextStyle(
+  fontFamily: 'Poppins',
+  fontSize: 22,
+  fontWeight: FontWeight.w400,
+  color: Colors.white70,
+  );
+
+  static const String appName = "ClosetGenie";
+  static const String tagline = "Organize your wardrobe smartly";
 }

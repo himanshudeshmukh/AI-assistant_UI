@@ -188,4 +188,84 @@ static const Color darkNavy = Color(0xFF1F2E3A);
 
   /// Primary gradient end
   static const Color gradientEnd = primaryOrange;
+
+
+/// 🔥 PRIMARY BRAND (Header Gradient Feel)
+static const Color primary = Color(0xFFE35D5B);       // main red
+static const Color primaryDark = Color(0xFFD94C4A);   // deeper red
+static const Color primaryLight = Color(0xFFF07A73);  // lighter red
+
+/// 🔥 BACKGROUNDS
+// static const Color background = Color(0xFFF4EDED);    // app bg (light pinkish)
+// static const Color surface = Colors.white;            // cards
+//
+// /// 🔥 TEXT COLORS
+// static const Color textPrimary = Color(0xFF1C1C1C);
+// static const Color textSecondary = Color(0xFF6F6F6F);
+// static const Color textMuted = Color(0xFF9E9E9E);
+//
+// /// 🔥 BORDER / DIVIDER
+// static const Color border = Color(0xFFEAEAEA);
+static const Color divider = Color(0xFFF0F0F0);
+
+/// 🔥 LIVE STATUS (GREEN CARD)
+static const Color liveBg = Color(0xFFE3F0E8);
+static const Color liveBorder = Color(0xFFB7E0C2);
+static const Color liveGreen = Color(0xFF34A853);
+
+/// 🔥 ICON COLORS
+static const Color iconPrimary = Color(0xFF333333);
+static const Color iconMuted = Color(0xFF9E9E9E);
+
+/// 🔥 STAT ICON COLORS
+static const Color blue = Color(0xFF4A90E2);
+static const Color yellow = Color(0xFFFFC107);
+static const Color purple = Color(0xFF7E57C2);
+static const Color green = Color(0xFF2ECC71);
+
+/// 🔥 CHIP COLORS
+static const Color chipBg = Color(0xFFF2F2F2);
+static const Color chipText = Color(0xFF555555);
+
+/// 🔥 ACTION CARDS
+static const Color actionCardBg = Colors.white;
+
+/// 🔥 BUTTON
+static const Color buttonPrimary = Color(0xFFE04B3F);
+static const Color buttonText = Colors.white;
+
+/// 🔥 WARNING / INFO (Withdrawal Rules)
+static const Color warningBg = Color(0xFFF8EFD8);
+static const Color warningText = Color(0xFFB58B00);
+
+/// 🔥 SHADOW (use with opacity)
+static const Color shadow = Colors.black;
+
+/// 🔥 WALLET CHIP
+static const Color walletBg = Colors.white;
+
+
+
+  // static const Color splashBg = Color(0xFFE35D5B);
+  // static const Color waveColor = Color(0xFFF07A73);
+  // static const Color textWhite = Colors.white;
+
+
+  // static const Color splashBg = Color(0xFF11998E);
+  //
+  // /// GREEN
+  // static const Color waveColor = Color(0xFF38EF7D);
+  //
+  // /// 1. Fresh Mint
+  static const Color splashBg = Color(0xFF2EC4B6);
+  static const Color waveColor = Color(0xFF90DBA4);
+
+  /// 2. Deep Ocean (premium)
+  // static const Color splashBg = Color(0xFF0F766E);
+  // static const Color waveColor = Color(0xFF22C55E);
+
+  // /// 3. Vibrant Neon
+  // static const Color splashBg = Color(0xFF00C9A7);
+  // static const Color waveColor = Color(0xFF00F260);
+
 }

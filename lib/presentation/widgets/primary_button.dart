@@ -129,7 +129,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
               decoration: BoxDecoration(
                 // Button color based on state
                 color: isEnabled
-                    ? AppColors.muted_Mustard
+                    ? AppColors.splashBg
                     : AppColors.textDisabled,
 
                 // Border radius
@@ -141,7 +141,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                 boxShadow: [
                   if (isEnabled)
                     BoxShadow(
-                      color: AppColors.muted_Mustard.withOpacity(0.8),
+                      color: AppColors.splashBg.withOpacity(0.8),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),

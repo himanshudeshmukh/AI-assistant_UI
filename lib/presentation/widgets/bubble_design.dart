@@ -22,9 +22,8 @@ class BubbleDesign extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.oatMeal,
-                  AppColors.olive_Gold,
-                  AppColors.dark_Olive,
+                  AppColors.splashBg,
+                  AppColors.waveColor,
                 ],
               ),
             ),
@@ -42,9 +41,8 @@ class BubbleDesign extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.oatMeal,
-                  AppColors.olive_Gold,
-                  AppColors.dark_Olive,
+                  AppColors.splashBg,
+                  AppColors.waveColor,
                 ],
               ),
             ),

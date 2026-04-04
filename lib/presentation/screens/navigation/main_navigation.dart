@@ -41,9 +41,7 @@ class _MainNavigationState extends State<MainNavigation> {
       appBar: AppBar(
         title: Text(titles[currentIndex]),
 
-        /// LEFT TITLE ALIGN
-        centerTitle: true,
-
+        automaticallyImplyLeading: false,
         /// 🔥 RIGHT WALLET ICON
         actions: [
           IconButton(
