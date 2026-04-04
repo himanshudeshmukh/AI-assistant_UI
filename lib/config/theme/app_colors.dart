@@ -1,10 +1,3 @@
-/// [AppColors] - Centralized color palette for the entire application
-///
-/// This class defines all color constants used across the app to ensure
-/// consistency and make theme changes easy. All colors from the design mockup
-/// are defined here with proper naming conventions.
-///
-/// Usage: AppColors.primaryOrange, AppColors.backgroundColor, etc.
 library;
 
 import 'package:flutter/material.dart';
@@ -78,19 +71,12 @@ class AppColors {
 
   static const Color cardColor = Color(0xFFFFFFFF);
 
-  // ==================== Gradient Colors ====================
-  /// Primary gradient start (used for the wavy design element)
-  static const Color gradientStart = lightOrange;
-
-  /// Primary gradient end
-  static const Color gradientEnd = primaryOrange;
-
   // ==================== Victus-style auth (hero) screens ====================
   /// Dark hero background behind image header
   static const Color authHeroBackground = Color(0xFF0A0A0A);
 
   /// Gold accent used in hero headers and links
-  static const Color authHeroAccent = Color(0xFFC8A97E);
+  static const Color authHeroAccent = Color(0xFFDDDDDD);
 
   /// White card surface under the hero
   static const Color authCardSurface = Color(0xFFFFFFFF);

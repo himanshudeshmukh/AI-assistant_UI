@@ -11,6 +11,8 @@
 /// Usage: AppDimensions.paddingXL, AppDimensions.borderRadiusLarge, etc.
 library;
 
+import 'package:flutter/cupertino.dart';
+
 class AppDimensions {
   // Private constructor to prevent instantiation
   AppDimensions._();

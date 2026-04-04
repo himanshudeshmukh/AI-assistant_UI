@@ -107,8 +107,7 @@ class LoginScreenState extends State<LoginScreen> {
         }
       } else {
         setState(() {
-          _errorMessage =
-              response.message ?? 'Login failed. Please try again.';
+          _errorMessage = response.message ?? 'Login failed. Please try again.';
           _isLoading = false;
         });
       }
@@ -307,8 +306,7 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                    if (_successMessage != null &&
-                        _successMessage!.isNotEmpty)
+                    if (_successMessage != null && _successMessage!.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: Container(
@@ -330,7 +328,7 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                     const SizedBox(height: 24),
                     AuthHeroPrimaryButton(
-                      text: 'Sign In',
+                      text: 'Login',
                       isLoading: _isLoading,
                       onPressed: _isLoading ? null : _handleLogin,
                     ),

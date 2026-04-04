@@ -1,38 +1,33 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:profiler/config/theme/app_colors.dart';
 import '../../../config/utils/responsive.dart';
 
 class WardrobeGalleryPage extends StatefulWidget {
   const WardrobeGalleryPage({super.key});
 
   @override
-  State<WardrobeGalleryPage> createState() =>
-      _WardrobeGalleryPageState();
+  State<WardrobeGalleryPage> createState() => _WardrobeGalleryPageState();
 }
 
 class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
-
   final ImagePicker _picker = ImagePicker();
   File? _selectedImage;
 
   /// 🔥 DUMMY DATA
   final List<Map<String, Image>> items = [
     {
-      "image":
-      Image.asset("assets/clothes/blazer.jpg"),
+      "image": Image.asset("assets/clothes/blazer.jpg"),
     },
     {
-      "image":
-      Image.asset("assets/clothes/green shirt.jpg"),
+      "image": Image.asset("assets/clothes/green shirt.jpg"),
     },
     {
-      "image":
-      Image.asset("assets/clothes/red shirt.jpg"),
+      "image": Image.asset("assets/clothes/red shirt.jpg"),
     },
     {
-      "image":
-      Image.asset("assets/clothes/images.jpg"),
+      "image": Image.asset("assets/clothes/images.jpg"),
     },
   ];
 
@@ -58,7 +53,6 @@ class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
         return SafeArea(
           child: Wrap(
             children: [
-
               ListTile(
                 leading: const Icon(Icons.camera),
                 title: const Text("Camera"),
@@ -67,7 +61,6 @@ class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
                   _pickImage(ImageSource.camera);
                 },
               ),
-
               ListTile(
                 leading: const Icon(Icons.photo),
                 title: const Text("Gallery"),
@@ -85,20 +78,16 @@ class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final contentWidth = Responsive.maxContentWidth(screenWidth);
 
     return Scaffold(
-
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: Responsive.pagePadding(contentWidth),
         ),
-
         child: Column(
           children: [
-
             /// 🔥 SELECTED IMAGE PREVIEW
             if (_selectedImage != null)
               Container(
@@ -123,17 +112,10 @@ class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
                 itemCount: items.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-
-                  crossAxisSpacing:
-                  Responsive.itemGap(contentWidth),
-
-                  mainAxisSpacing:
-                  Responsive.itemGap(contentWidth),
-
-                  childAspectRatio:
-                  Responsive.productAspectRatio(contentWidth),
+                  crossAxisSpacing: Responsive.itemGap(contentWidth),
+                  mainAxisSpacing: Responsive.itemGap(contentWidth),
+                  childAspectRatio: Responsive.productAspectRatio(contentWidth),
                 ),
-
                 itemBuilder: (context, index) {
                   final item = items[index];
 
@@ -151,6 +133,8 @@ class _WardrobeGalleryPageState extends State<WardrobeGalleryPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showPicker,
         child: const Icon(Icons.add),
+        foregroundColor: Colors.white,
+        backgroundColor: AppColors.authSocialLabel,
       ),
     );
   }
@@ -186,17 +170,16 @@ class _WardrobeCard extends StatelessWidget {
           ),
         ],
       ),
-
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Container(
           color: Colors.white, // subtle card base (optional)
           child: SizedBox.expand(
-        child: FittedBox(
-        fit: BoxFit.cover,
-          child: image,
-        ),
-      ),
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: image,
+            ),
+          ),
         ),
       ),
     );

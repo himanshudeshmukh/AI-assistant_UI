@@ -6,7 +6,7 @@ class WavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.waveColor.withOpacity(0.25)
+      ..color = AppColors.backgroundColor.withOpacity(0.25)
       ..style = PaintingStyle.fill;
 
     final path = Path();

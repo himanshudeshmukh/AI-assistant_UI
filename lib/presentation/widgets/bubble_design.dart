@@ -10,20 +10,19 @@ class BubbleDesign extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-
         /// Top bubble
         Positioned(
-          top:-60,
+          top: -60,
           right: -30,
           child: Container(
-            height: MediaQuery.of(context).size.height/4,
-            width: MediaQuery.of(context).size.height/4,
+            height: MediaQuery.of(context).size.height / 4,
+            width: MediaQuery.of(context).size.height / 4,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.splashBg,
-                  AppColors.waveColor,
+                  AppColors.authHeroAccent,
+                  AppColors.authHeroAccent,
                 ],
               ),
             ),
@@ -35,14 +34,14 @@ class BubbleDesign extends StatelessWidget {
           top: -340,
           left: -130,
           child: Container(
-            height: MediaQuery.of(context).size.height/1,
+            height: MediaQuery.of(context).size.height / 1,
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  AppColors.splashBg,
-                  AppColors.waveColor,
+                  AppColors.authHeroAccent,
+                  AppColors.authHeroAccent,
                 ],
               ),
             ),

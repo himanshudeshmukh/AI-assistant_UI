@@ -121,7 +121,8 @@ class _PrimaryButtonState extends State<PrimaryButton>
           child: InkWell(
             // ========== Visual Feedback ==========
             onTap: _handlePressed,
-            borderRadius: BorderRadius.circular(AppDimensions.buttonBorderRadius),
+            borderRadius:
+                BorderRadius.circular(AppDimensions.buttonBorderRadius),
             highlightColor: Colors.transparent,
             splashColor: Colors.white.withOpacity(0.1),
 
@@ -130,7 +131,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
               decoration: BoxDecoration(
                 // Button color based on state
                 color: isEnabled
-                    ? AppColors.splashBg
+                    ? AppColors.authHeroAccent
                     : AppColors.textDisabled,
 
                 // Border radius
@@ -142,7 +143,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                 boxShadow: [
                   if (isEnabled)
                     BoxShadow(
-                      color: AppColors.splashBg.withOpacity(0.8),
+                      color: AppColors.authHeroAccent.withOpacity(0.8),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -152,24 +153,24 @@ class _PrimaryButtonState extends State<PrimaryButton>
               // ========== Button Content ==========
               child: Center(
                 child: widget.isLoading
-                // ========== Loading State ==========
+                    // ========== Loading State ==========
                     ? widget.customLoadingWidget ??
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          widget.loadingIndicatorColor,
-                        ),
-                      ),
-                    )
-                // ========== Button Text ==========
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              widget.loadingIndicatorColor,
+                            ),
+                          ),
+                        )
+                    // ========== Button Text ==========
                     : Text(
-                  widget.text,
-                  style: AppTextStyles.headingMedium,
-                  textAlign: TextAlign.center,
-                ),
+                        widget.text,
+                        style: AppTextStyles.headingMedium,
+                        textAlign: TextAlign.center,
+                      ),
               ),
             ),
           ),

@@ -1,164 +1,363 @@
-/// [main.dart] - Application entry point
-///
-/// Configures the Flutter app with:
-/// - Material theme using custom colors and typography
-/// - Navigation routes
-/// - Global error handling
-/// - Root screen setup
-library;
-
-
 import 'package:flutter/material.dart';
-import 'package:profiler/presentation/screens/auth/forgot_password_screen.dart';
-import 'package:profiler/presentation/screens/auth/login_screen.dart';
-import 'package:profiler/presentation/screens/auth/signup_screen.dart';
-import 'package:profiler/presentation/screens/home/home_screen.dart';
-import 'package:profiler/presentation/screens/splash_screen.dart';
-import 'config/theme/app_colors.dart';
-import 'config/theme/app_dimensions.dart';
-import 'config/theme/app_text_styles.dart';
-
+import 'package:profiler/presentation/screens/navigation/main_navigation.dart';
+import 'package:provider/provider.dart';
+import 'data/controller/user_controller.dart';
+import 'data/controller/weather_controller.dart';
+import 'presentation/screens/home/home_screen.dart';
 
 void main() async {
-  // Initialize any required services here
-  // Example:
-  // - Firebase initialization
-  // - Local storage setup
-  // - Analytics initialization
-
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  // Create controllers and start pre-fetching IMMEDIATELY
+  final weatherController = WeatherController(); // This starts fetching weather
+  final userController = UserController(); // This loads user data
+
+  runApp(
+    MultiProvider(
+      providers: [
+        // Provide controllers to the entire app
+        ChangeNotifierProvider.value(value: weatherController),
+        ChangeNotifierProvider.value(value: userController),
+      ],
+      child: const WardrobeApp(),
+    ),
+  );
 }
 
-/// Main application widget
-///
-/// Configures Material theme and routes
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WardrobeApp extends StatelessWidget {
+  const WardrobeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // ==================== Branding ====================
-      title: 'Victus One',
-
-      // ==================== Theme Configuration ====================
-      theme: ThemeData(
-        // ========== Color Scheme ==========
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primaryOrange,
-          brightness: Brightness.light,
-        ),
-
-        // ========== AppBar Theme ==========
-        appBarTheme: const AppBarTheme(
-          backgroundColor: AppColors.backgroundColor,
-          foregroundColor: AppColors.textPrimary,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: AppTextStyles.headingMedium,
-        ),
-
-        // ========== Text Theme ==========
-        textTheme: const TextTheme(
-          displayLarge: AppTextStyles.headingLarge,
-          displayMedium: AppTextStyles.headingMedium,
-          displaySmall: AppTextStyles.headingSmall,
-          headlineMedium: AppTextStyles.headingMedium,
-          headlineSmall: AppTextStyles.headingSmall,
-          titleLarge: AppTextStyles.bodyLarge,
-          titleMedium: AppTextStyles.bodyMedium,
-          titleSmall: AppTextStyles.bodySmall,
-          bodyLarge: AppTextStyles.bodyLarge,
-          bodyMedium: AppTextStyles.bodyMedium,
-          bodySmall: AppTextStyles.bodySmall,
-          labelLarge: AppTextStyles.buttonLarge,
-          labelMedium: AppTextStyles.buttonSmall,
-        ),
-
-        // ========== Input Decoration Theme ==========
-        inputDecorationTheme: InputDecorationTheme(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppDimensions.inputPaddingHorizontal,
-            vertical: AppDimensions.inputPaddingVertical,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppDimensions.borderRadiusM,
-            ),
-            borderSide: const BorderSide(
-              color: AppColors.inputBorderColor,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppDimensions.borderRadiusM,
-            ),
-            borderSide: const BorderSide(
-              color: AppColors.inputBorderColor,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(
-              AppDimensions.borderRadiusM,
-            ),
-            borderSide: const BorderSide(
-              color: AppColors.primaryOrange,
-              width: 2,
-            ),
-          ),
-          hintStyle: AppTextStyles.inputHint,
-          labelStyle: AppTextStyles.inputLabel,
-          errorStyle: AppTextStyles.errorText,
-        ),
-
-        // ========== Button Theme ==========
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryOrange,
-            foregroundColor: AppColors.surfaceColor,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.buttonPaddingHorizontal,
-              vertical: AppDimensions.buttonPaddingVertical,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                AppDimensions.buttonBorderRadius,
-              ),
-            ),
-          ),
-        ),
-
-        // ========== Other Themes ==========
-        scaffoldBackgroundColor: AppColors.backgroundColor,
-        dividerColor: AppColors.dividerColor,
-        dividerTheme: const DividerThemeData(
-          color: AppColors.dividerColor,
-          thickness: AppDimensions.dividerThickness,
-        ),
-      ),
-
-      // ==================== Routes ====================
-      home: const LoginScreen(),
-      routes: {
-        '/splash': (context) => const SplashScreenRobot(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
-        '/forgot-password': (context) => const ForgotPasswordScreen(),
-        '/home': (context) => const HomeScreen(),
-      },
-
-      // ==================== Error Handling ====================
-      builder: (context, child) {
-        // Wrap entire app with custom error handling if needed
-        return child ?? const SizedBox.shrink();
-      },
-
-      // ==================== Debug Banner ====================
       debugShowCheckedModeBanner: false,
+      title: 'Victus One',
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Poppins', // Optional: Add custom font
+      ),
+      home: const MainNavigation(),
     );
   }
 }
 
+// await AuthService.logout();
+//
+// Navigator.pushAndRemoveUntil(
+// context,
+// MaterialPageRoute(builder: (_) => const LoginScreen()),
+// (route) => false,
+// );
+
+// import 'dart:async';
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:profiler/presentation/widgets/try_on_response.dart';
+//
+// void main() {
+//   runApp(const TryOnDemoApp());
+// }
+//
+// class TryOnDemoApp extends StatelessWidget {
+//   const TryOnDemoApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'FASHN VTON Demo',
+//       debugShowCheckedModeBanner: false,
+//       theme: ThemeData(
+//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+//         useMaterial3: true,
+//       ),
+//       home: const TryOnDemoPage(),
+//     );
+//   }
+// }
+//
+// class TryOnDemoPage extends StatefulWidget {
+//   const TryOnDemoPage({super.key});
+//
+//   @override
+//   State<TryOnDemoPage> createState() => _TryOnDemoPageState();
+// }
+//
+// class _TryOnDemoPageState extends State<TryOnDemoPage> {
+//   final ImagePicker _picker = ImagePicker();
+//
+//   final TextEditingController _baseUrlController = TextEditingController(
+//     text: const String.fromEnvironment(
+//       'API_BASE_URL',
+//       defaultValue: 'http://10.0.2.2:8000',
+//     ),
+//   );
+//
+//   XFile? _personImage;
+//   XFile? _garmentImage;
+//   Size? _personSize;
+//
+//   bool _loading = false;
+//   bool _useOverlay = true;
+//
+//   String _category = 'tops';
+//   String _garmentPhotoType = 'flat-lay';
+//
+//   TryOnResponse? _response;
+//   String? _error;
+//
+//   String _cacheBust = '';
+//
+//   @override
+//   void dispose() {
+//     _baseUrlController.dispose();
+//     super.dispose();
+//   }
+//
+//   Future<void> _pickPersonImage() async {
+//     final file =
+//         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+//
+//     if (file == null) return;
+//
+//     final size = await _readImageSize(file);
+//
+//     setState(() {
+//       _personImage = file;
+//       _personSize = size;
+//       _response = null;
+//       _error = null;
+//     });
+//   }
+//
+//   Future<void> _pickGarmentImage() async {
+//     final file =
+//         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+//
+//     if (file == null) return;
+//
+//     setState(() {
+//       _garmentImage = file;
+//       _response = null;
+//       _error = null;
+//     });
+//   }
+//
+//   Future<Size> _readImageSize(XFile file) async {
+//     final bytes = await file.readAsBytes();
+//
+//     final image = await decodeImageFromList(bytes);
+//
+//     return Size(
+//       image.width.toDouble(),
+//       image.height.toDouble(),
+//     );
+//   }
+//
+//   Future<void> _runTryOn() async {
+//     if (_personImage == null || _garmentImage == null) {
+//       setState(() {
+//         _error = 'Please select both a person image and a garment image.';
+//       });
+//       return;
+//     }
+//
+//     setState(() {
+//       _loading = true;
+//       _error = null;
+//       _response = null;
+//     });
+//
+//     try {
+//       final service = TryOnApiService(baseUrl: _baseUrlController.text.trim());
+//
+//       final result = await service.createTryOn(
+//         personImage: _personImage!,
+//         garmentImage: _garmentImage!,
+//         category: _category,
+//         garmentPhotoType: _garmentPhotoType,
+//         returnOverlay: _useOverlay,
+//       );
+//
+//       setState(() {
+//         _response = result;
+//         _cacheBust = DateTime.now().millisecondsSinceEpoch.toString();
+//       });
+//     } catch (e) {
+//       setState(() {
+//         _error = e.toString();
+//       });
+//     } finally {
+//       if (mounted) {
+//         setState(() {
+//           _loading = false;
+//         });
+//       }
+//     }
+//   }
+//
+//   Widget _buildImageCard({
+//     required String title,
+//     required XFile? file,
+//     required VoidCallback onPressed,
+//   }) {
+//     return Card(
+//       child: Padding(
+//         padding: const EdgeInsets.all(12),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text(title, style: Theme.of(context).textTheme.titleMedium),
+//             const SizedBox(height: 12),
+//             AspectRatio(
+//               aspectRatio: 3 / 4,
+//               child: DecoratedBox(
+//                 decoration: BoxDecoration(
+//                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 child: file == null
+//                     ? const Center(child: Text('No image selected'))
+//                     : ClipRRect(
+//                         borderRadius: BorderRadius.circular(12),
+//                         child: Image.file(
+//                           File(file.path),
+//                           fit: BoxFit.cover,
+//                         ),
+//                       ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             FilledButton.tonal(
+//               onPressed: onPressed,
+//               child: Text(file == null ? 'Choose image' : 'Change image'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildTryOnPreview() {
+//     final personFile = _personImage;
+//
+//     if (personFile == null) {
+//       return const Card(
+//         child: SizedBox(
+//           height: 420,
+//           child: Center(
+//             child: Text('Select a person image to preview the final fit.'),
+//           ),
+//         ),
+//       );
+//     }
+//
+//     final aspectRatio = _personSize != null && _personSize!.height > 0
+//         ? _personSize!.width / _personSize!.height
+//         : 3 / 4;
+//
+//     final overlayUrl = _response?.overlayResultUrl;
+//     final fullUrl = _response?.fullResultUrl;
+//
+//     return Card(
+//       child: Padding(
+//         padding: const EdgeInsets.all(12),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text(
+//               'Rendered on the person image',
+//               style: Theme.of(context).textTheme.titleMedium,
+//             ),
+//             const SizedBox(height: 12),
+//             AspectRatio(
+//               aspectRatio: aspectRatio,
+//               child: ClipRRect(
+//                 borderRadius: BorderRadius.circular(16),
+//                 child: DecoratedBox(
+//                   decoration: BoxDecoration(
+//                     color:
+//                         Theme.of(context).colorScheme.surfaceContainerHighest,
+//                   ),
+//                   child: Stack(
+//                     fit: StackFit.expand,
+//                     children: [
+//                       Image.file(
+//                         File(personFile.path),
+//                         fit: BoxFit.contain,
+//                       ),
+//                       if (overlayUrl != null)
+//                         Image.network(
+//                           '$overlayUrl?v=$_cacheBust',
+//                           fit: BoxFit.contain,
+//                           errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+//                         )
+//                       else if (fullUrl != null)
+//                         Image.network(
+//                           '$fullUrl?v=$_cacheBust',
+//                           fit: BoxFit.contain,
+//                           errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+//                         ),
+//                       if (_loading)
+//                         const ColoredBox(
+//                           color: Color(0x88000000),
+//                           child: Center(child: CircularProgressIndicator()),
+//                         ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             const Text(
+//               'Use BoxFit.contain for both the base person image and the returned overlay/full result. '
+//               'Do not switch this preview to BoxFit.cover, because cover can crop differently and break alignment.',
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('FASHN VTON Flutter Demo'),
+//       ),
+//       body: SafeArea(
+//         child: SingleChildScrollView(
+//           padding: const EdgeInsets.all(16),
+//           child: Column(
+//             children: [
+//               TextField(
+//                 controller: _baseUrlController,
+//                 decoration: const InputDecoration(
+//                   labelText: 'Python API base URL',
+//                   hintText: 'http://10.0.2.2:8000',
+//                   border: OutlineInputBorder(),
+//                 ),
+//               ),
+//               const SizedBox(height: 16),
+//
+//               /// BUTTON
+//               FilledButton.icon(
+//                 onPressed: _loading ? null : _runTryOn,
+//                 icon: const Icon(Icons.auto_awesome),
+//                 label: Text(_loading ? 'Rendering...' : 'Run virtual try-on'),
+//               ),
+//
+//               if (_error != null) ...[
+//                 const SizedBox(height: 12),
+//                 Text(
+//                   _error!,
+//                   style: TextStyle(color: Theme.of(context).colorScheme.error),
+//                 ),
+//               ],
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

@@ -513,14 +513,13 @@
 //   bool get isLight => brightness == Brightness.light;
 // }
 
-
-
-
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'app_colors.dart';
+
 class AppTheme {
   AppTheme._();
+
   static ThemeData get lightTheme {
     const textTheme = TextTheme(
       titleLarge: TextStyle(
@@ -547,20 +546,20 @@ class AppTheme {
       labelSmall: TextStyle(
         fontSize: 9,
         fontWeight: FontWeight.w500,
-        color: AppColors.textMuted,
+        color: AppColors.authHeroAccent,
         letterSpacing: 1.2,
       ),
     );
     return ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: AppColors.authHeroAccent,
       colorScheme: const ColorScheme.light(
-        surface: AppColors.surface,
-        primary: AppColors.navActive,
+        surface: AppColors.authHeroAccent,
+        primary: AppColors.authHeroAccent,
         onSurface: AppColors.textPrimary,
       ),
       textTheme: textTheme,
-      dividerColor: AppColors.border,
+      dividerColor: AppColors.backgroundColor,
       splashFactory: NoSplash.splashFactory,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -569,7 +568,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.searchBackground,
+        fillColor: AppColors.authCardSurface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide.none,
@@ -580,14 +579,14 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: const BorderSide(color: AppColors.inputBorderColor),
         ),
         hintStyle: const TextStyle(
           fontSize: 12,
-          color: AppColors.textMuted,
+          color: AppColors.authInputBorder,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12,
-            vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
     );
   }

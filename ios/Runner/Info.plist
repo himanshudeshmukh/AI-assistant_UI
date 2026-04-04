@@ -66,5 +66,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Tell iOS why the app needs location access. -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs your location to show local time and day/night status.</string>
 </dict>
 </plist>

@@ -161,7 +161,6 @@ class _SignupScreenState extends State<SignupScreen> {
             height: _heroHeight,
             child: HeroSection(
               height: _heroHeight,
-              onBack: () => Navigator.of(context).pop(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:profiler/presentation/screens/home/wardrobe_gallery_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../config/theme/app_colors.dart';
 import '../home/home_screen.dart';
 import '../home/profile_screen.dart';
 import '../home/recommendation_screen.dart';
-
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -14,12 +14,12 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
     HomeScreen(),
     GenerateScreen(),
+    WardrobeGalleryPage(),
     ProfileScreen(),
   ];
 
@@ -55,25 +55,27 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           unselectedLabelStyle: const TextStyle(fontSize: 12),
           items: const [
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: "Home",
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.auto_awesome_outlined),
-            activeIcon: Icon(Icons.auto_awesome),
-            label: "Generate",
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: "Profile",
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.shirt),
+              activeIcon: Icon(Icons.auto_awesome),
+              label: "Wardrobe",
+            ),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.wandMagicSparkles),
+              activeIcon: Icon(Icons.auto_awesome),
+              label: "Generate",
+            ),
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.userTie),
+              activeIcon: Icon(Icons.person),
+              label: "Profile",
+            ),
+          ],
         ),
       ),
     );

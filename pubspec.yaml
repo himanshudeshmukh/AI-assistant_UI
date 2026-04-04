@@ -16,7 +16,6 @@ dependencies:
   ## HTTP Networking
   ## Used for API communication with backend
   ## https://pub.dev/packages/http
-  http: ^1.2.2
   cupertino_icons: ^1.0.2
   # Aligned with victus_one (same major as your standalone app)
   flutter_svg: ^2.0.0
@@ -26,6 +25,11 @@ dependencies:
   image_picker: ^1.2.0
   dio: ^5.9.0
   shared_preferences: ^2.5.5
+  font_awesome_flutter: ^10.7.0
+  geolocator: ^10.1.0
+  http: ^1.1.0
+  url_launcher: ^6.2.1
+  provider: ^6.1.1
 
 
   # ==================== State Management (Optional) ====================

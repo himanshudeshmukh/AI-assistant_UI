@@ -8,11 +8,12 @@ class CustomBottomNavBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
   });
+
   final int currentIndex;
   final ValueChanged<int> onTap;
   static const List<_NavItemData> _items = <_NavItemData>[
-    _NavItemData(label: 'Home', icon: Icons.home_outlined,
-        activeIcon: Icons.home),
+    _NavItemData(
+        label: 'Home', icon: Icons.home_outlined, activeIcon: Icons.home),
     _NavItemData(
       label: 'Wardrobe',
       icon: Icons.checkroom_outlined,
@@ -29,6 +30,7 @@ class CustomBottomNavBar extends StatelessWidget {
       activeIcon: Icons.person,
     ),
   ];
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -39,9 +41,9 @@ class CustomBottomNavBar extends StatelessWidget {
         height: navHeight,
         padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.authHeroAccent,
           border: const Border(
-            top: BorderSide(color: AppColors.border),
+            top: BorderSide(color: AppColors.authHeroAccent),
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -65,11 +67,11 @@ class CustomBottomNavBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
-                      padding: const EdgeInsets.symmetric(vertical: 6,
-                          horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 4),
                       decoration: BoxDecoration(
                         color: isActive
-                            ? AppColors.navHighlight
+                            ? AppColors.authHeroAccent
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -80,24 +82,26 @@ class CustomBottomNavBar extends StatelessWidget {
                             isActive ? item.activeIcon : item.icon,
                             size: 18,
                             color: isActive
-                                ? AppColors.navActive
-                                : AppColors.navInactive,
+                                ? AppColors.authHeroAccent
+                                : AppColors.authHeroAccent,
                           ),
                           const SizedBox(height: 4),
                           Text(
                             item.label.toUpperCase(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style:
-                            Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: isActive
-                                  ? AppColors.navActive
-                                  : AppColors.navInactive,
-                              fontWeight:
-                              isActive ? FontWeight.w600 :
-                              FontWeight.w500,
-                              letterSpacing: 0.8,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: isActive
+                                      ? AppColors.authHeroAccent
+                                      : AppColors.authHeroAccent,
+                                  fontWeight: isActive
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
+                                  letterSpacing: 0.8,
+                                ),
                           ),
                         ],
                       ),
@@ -112,12 +116,14 @@ class CustomBottomNavBar extends StatelessWidget {
     );
   }
 }
+
 class _NavItemData {
   const _NavItemData({
     required this.label,
     required this.icon,
     required this.activeIcon,
   });
+
   final String label;
   final IconData icon;
   final IconData activeIcon;
