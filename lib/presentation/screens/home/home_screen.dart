@@ -1,501 +1,9 @@
-// import 'package:flutter/material.dart';
-//
-// import '../../../config/theme/app_colors.dart';
-// import '../../../config/theme/app_dimensions.dart';
-// import '../../../config/theme/app_text_styles.dart';
-// import '../../../data/models/outfit_model.dart';
-//
-//
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   // ==================== State ====================
-//   /// List of outfit recommendations
-//   late List<OutfitModel> _outfits;
-//
-//   /// Featured outfit
-//   late OutfitModel _featuredOutfit;
-//
-//   /// Loading state
-//   bool _isLoading = false;
-//
-//   // ==================== Lifecycle ====================
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadOutfits();
-//   }
-//
-//   /// Loads outfit data (dummy for now, backend later)
-//   ///
-//   /// To convert to backend:
-//   /// Replace DummyOutfitData.getOutfits() with API call:
-//   /// ```dart
-//   /// _outfits = await OutfitService.fetchOutfits();
-//   /// _featuredOutfit = await OutfitService.fetchFeaturedOutfit();
-//   /// ```
-//   void _loadOutfits() {
-//     setState(() => _isLoading = true);
-//
-//     // Simulate network delay
-//     Future.delayed(const Duration(milliseconds: 500), () {
-//       if (mounted) {
-//         setState(() {
-//           _outfits = DummyOutfitData.getOutfits();
-//           _featuredOutfit = DummyOutfitData.getTodaysOutfit();
-//           _isLoading = false;
-//         });
-//       }
-//     });
-//   }
-//
-//   // ==================== Build ====================
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: AppColors.backgroundColor,
-//       body: _buildBody(),
-//     );
-//   }
-//
-//   /// Builds the body content
-//   Widget _buildBody() {
-//     if (_isLoading) {
-//       return const Center(
-//         child: CircularProgressIndicator(
-//           valueColor: AlwaysStoppedAnimation<Color>(
-//             AppColors.primaryOrange,
-//           ),
-//         ),
-//       );
-//     }
-//
-//     return SingleChildScrollView(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           // ==================== Greeting ====================
-//           _buildGreeting(),
-//
-//           // ==================== Featured Outfit ====================
-//           SizedBox(height: AppDimensions.paddingL),
-//           _buildFeaturedOutfit(),
-//
-//           // ==================== Style Picks Header ====================
-//           SizedBox(height: AppDimensions.paddingXXL),
-//           _buildStylePicksHeader(),
-//
-//           // ==================== Outfit Cards (Scrollable) ====================
-//           SizedBox(height: AppDimensions.paddingL),
-//           _buildOutfitCardsList(),
-//
-//           // ==================== Bottom Spacing ====================
-//           SizedBox(height: AppDimensions.paddingXXL),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// Builds the greeting section
-//   Widget _buildGreeting() {
-//     return Padding(
-//       padding: const EdgeInsets.fromLTRB(
-//         AppDimensions.paddingXL,
-//         AppDimensions.paddingXL,
-//         AppDimensions.paddingXL,
-//         0,
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 DummyOutfitData.getGreeting('Sarah'),
-//                 style: AppTextStyles.bodySmall.copyWith(
-//                   color: AppColors.textSecondary,
-//                   fontSize: 14,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           // Dropdown indicator
-//           const Icon(
-//             Icons.keyboard_arrow_down,
-//             color: AppColors.textSecondary,
-//             size: 20,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// Builds the featured outfit card
-//   Widget _buildFeaturedOutfit() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(
-//         horizontal: AppDimensions.paddingXL,
-//       ),
-//       child: Container(
-//         height: 300,
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topLeft,
-//             end: Alignment.bottomRight,
-//             colors: [
-//               Colors.purple.withOpacity(0.15),
-//               Colors.pink.withOpacity(0.1),
-//             ],
-//           ),
-//           borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-//         ),
-//         child: Stack(
-//           children: [
-//             // ==================== Background Image ====================
-//             Positioned(
-//               right: -50,
-//               top: -50,
-//               child: ClipRRect(
-//                 borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-//                 // child: Image.network(
-//                 //   _featuredOutfit.imageUrl,
-//                 //   width: 400,
-//                 //   height: 400,
-//                 //   fit: BoxFit.cover,
-//                 //   errorBuilder: (context, error, stackTrace) {
-//                 //     return Container(
-//                 //       width: 400,
-//                 //       height: 400,
-//                 //       color: AppColors.primaryOrange.withOpacity(0.2),
-//                 //       child: const Icon(Icons.image),
-//                 //     );
-//                 //   },
-//                 // ),
-//                 child: Image.asset(
-//
-//                 ),
-//               ),
-//             ),
-//
-//             // ==================== Content ====================
-//             Padding(
-//               padding: const EdgeInsets.all(AppDimensions.paddingXL),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   // Title
-//                   Text(
-//                     _featuredOutfit.title,
-//                     style: AppTextStyles.headingLarge.copyWith(
-//                       color: const Color(0xFF1a1a2e),
-//                       fontSize: 32,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//
-//                   // Description and button
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         _featuredOutfit.description,
-//                         style: AppTextStyles.bodySmall.copyWith(
-//                           color: AppColors.textSecondary,
-//                           fontSize: 16,
-//                         ),
-//                       ),
-//
-//                       const SizedBox(height: AppDimensions.paddingL),
-//
-//                       // View Outfit Button
-//                       ElevatedButton(
-//                         onPressed: () {
-//                           debugPrint('View outfit tapped');
-//                         },
-//                         style: ElevatedButton.styleFrom(
-//                           backgroundColor: Colors.white,
-//                           elevation: 0,
-//                           padding: const EdgeInsets.symmetric(
-//                             horizontal: AppDimensions.paddingXL,
-//                             vertical: AppDimensions.paddingM,
-//                           ),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(50),
-//                           ),
-//                         ),
-//                         child: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             Text(
-//                               'View Outfit',
-//                               style: AppTextStyles.bodyMedium.copyWith(
-//                                 color: const Color(0xFF1a1a2e),
-//                                 fontWeight: FontWeight.w600,
-//                               ),
-//                             ),
-//                             SizedBox(width: AppDimensions.paddingS),
-//                             const Icon(
-//                               Icons.arrow_forward,
-//                               color: Color(0xFF1a1a2e),
-//                               size: 18,
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   /// Builds the "Style Picks for You" header
-//   Widget _buildStylePicksHeader() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(
-//         horizontal: AppDimensions.paddingXL,
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(
-//             'Style Picks for You',
-//             style: AppTextStyles.headingSmall.copyWith(
-//               color: AppColors.textPrimary,
-//               fontSize: 20,
-//               fontWeight: FontWeight.w600,
-//             ),
-//           ),
-//           Icon(
-//             Icons.arrow_forward,
-//             color: AppColors.textSecondary,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// Builds the scrollable list of outfit cards
-//   ///
-//   /// Uses ListView.builder for efficient rendering
-//   /// Easy to switch to backend API data
-//   Widget _buildOutfitCardsList() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(
-//         horizontal: AppDimensions.paddingXL,
-//       ),
-//       child: ListView.builder(
-//         shrinkWrap: true,
-//         physics: const NeverScrollableScrollPhysics(),
-//         itemCount: _outfits.length,
-//         itemBuilder: (context, index) {
-//           return Padding(
-//             padding: EdgeInsets.only(
-//               bottom: AppDimensions.paddingL,
-//             ),
-//             child: _buildOutfitCard(_outfits[index]),
-//           );
-//         },
-//       ),
-//     );
-//   }
-//
-//   /// Builds a single outfit card
-//   ///
-//   /// [outfit] - The outfit to display
-//   Widget _buildOutfitCard(OutfitModel outfit) {
-//     return GestureDetector(
-//       onTap: () {
-//         debugPrint('Tapped outfit: ${outfit.title}');
-//       },
-//       child: Container(
-//         height: 250,
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-//           gradient: LinearGradient(
-//             begin: Alignment.topLeft,
-//             end: Alignment.bottomRight,
-//             colors: _getCardGradientColors(outfit.category ?? ''),
-//           ),
-//         ),
-//         child: Stack(
-//           children: [
-//             // ==================== Background Image ====================
-//             // Positioned(
-//             //   right: -30,
-//             //   top: -30,
-//             //   bottom: -30,
-//             //   child: ClipRRect(
-//             //     borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-//             //     child: Image.network(
-//             //       outfit.imageUrl,
-//             //       width: 280,
-//             //       fit: BoxFit.cover,
-//             //       errorBuilder: (context, error, stackTrace) {
-//             //         return Container(
-//             //           width: 280,
-//             //           color: AppColors.primaryOrange.withOpacity(0.2),
-//             //           child: const Icon(Icons.image),
-//             //         );
-//             //       },
-//             //     ),
-//             //   ),
-//             // ),
-//             Positioned( right: -30,
-//             top: -30,
-//             bottom: -30,
-//             child: Image.asset(
-//               'assets/clothes/images.jpg'),
-//             ),
-//             // ==================== Content ====================
-//             Padding(
-//               padding: const EdgeInsets.all(AppDimensions.paddingL),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   // Title
-//                   Text(
-//                     outfit.title,
-//                     style: AppTextStyles.headingSmall.copyWith(
-//                       color: const Color(0xFF1a1a2e),
-//                       fontSize: 22,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//
-//                   // Description and button
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         outfit.description,
-//                         style: AppTextStyles.bodySmall.copyWith(
-//                           color: AppColors.textSecondary,
-//                           fontSize: 13,
-//                         ),
-//                       ),
-//
-//                       SizedBox(height: AppDimensions.paddingL),
-//
-//                       // View Outfit Button
-//                       ElevatedButton(
-//                         onPressed: () {
-//                           debugPrint('View ${outfit.title} tapped');
-//                         },
-//                         style: ElevatedButton.styleFrom(
-//                           backgroundColor: Colors.white,
-//                           elevation: 0,
-//                           padding: const EdgeInsets.symmetric(
-//                             horizontal: AppDimensions.paddingL,
-//                             vertical: AppDimensions.paddingS,
-//                           ),
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(50),
-//                           ),
-//                         ),
-//                         child: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             Text(
-//                               'View Outfit',
-//                               style: AppTextStyles.bodySmall.copyWith(
-//                                 color: const Color(0xFF1a1a2e),
-//                                 fontWeight: FontWeight.w600,
-//                               ),
-//                             ),
-//                             SizedBox(width: AppDimensions.paddingXS),
-//                             const Icon(
-//                               Icons.arrow_forward,
-//                               color: Color(0xFF1a1a2e),
-//                               size: 14,
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   /// Gets gradient colors based on outfit category
-//   ///
-//   /// [category] - The outfit category
-//   /// Returns appropriate gradient colors
-//   List<Color> _getCardGradientColors(String category) {
-//     switch (category.toLowerCase()) {
-//       case 'casual':
-//         return [
-//           Colors.amber.withOpacity(0.15),
-//           Colors.orange.withOpacity(0.1),
-//         ];
-//       case 'professional':
-//         return [
-//           Colors.pink.withOpacity(0.15),
-//           Colors.red.withOpacity(0.1),
-//         ];
-//       case 'athletic':
-//         return [
-//           Colors.purple.withOpacity(0.15),
-//           Colors.blue.withOpacity(0.1),
-//         ];
-//       case 'formal':
-//         return [
-//           Colors.blue.withOpacity(0.15),
-//           Colors.indigo.withOpacity(0.1),
-//         ];
-//       default:
-//         return [
-//           Colors.grey.withOpacity(0.15),
-//           Colors.blueGrey.withOpacity(0.1),
-//         ];
-//     }
-//   }
-// }
-
-
-/// [HomeScreen] - Home screen with featured outfit and outfit recommendations
-///
-/// Displays:
-/// - Greeting message
-/// - Featured "Today's Outfit" card with asset image
-/// - Vertically scrollable outfit cards with asset images
-/// - Easy to switch from dummy to backend data
-///
-/// Following: Clean architecture, Responsive design, Professional UX
 library;
 
-
 import 'package:flutter/material.dart';
-import '../../../config/theme/app_colors.dart';
-import '../../../config/theme/app_text_styles.dart';
-import '../../../config/theme/app_dimensions.dart';
-import '../../../data/models/outfit_model.dart';
 
-/// Home screen displaying outfit recommendations and featured outfit
-///
-/// Features:
-/// - Greeting message that changes by time of day
-/// - Featured "Today's Outfit" card with asset image
-/// - Scrollable list of style recommendations with asset images
-/// - Designed for easy backend integration
+import '../../../config/theme/app_colors.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -504,261 +12,726 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // ==================== State ====================
-  /// List of outfit recommendations
-  late List<OutfitModel> _outfits;
+  static const Color _bg = Color(0xFFF7F6F3);
+  static const Color _dark = Color(0xFF111111);
+  static const Color _darkSurface = Color(0xFF1E1E1E);
+  static const Color _gold = Color(0xFFC4A265);
+  static const Color _goldLight = Color(0xFFD4B87A);
 
-  /// Featured outfit
-  late OutfitModel _featuredOutfit;
+  final TextEditingController _searchController = TextEditingController();
+  bool _searchFocused = false;
+  String? _selectedCategoryId;
+  final Set<int> _likedOutfits = <int>{};
+  int _activeTab = 0;
 
-  /// Loading state
-  bool _isLoading = false;
+  final List<_CategoryItem> _categories = const <_CategoryItem>[
+    _CategoryItem(id: 'ai-stylist', label: 'AI Stylist', icon: Icons.auto_awesome),
+    _CategoryItem(id: 'wardrobe', label: 'Wardrobe', icon: Icons.checkroom),
+    _CategoryItem(id: 'style-guide', label: 'Style Guide', icon: Icons.menu_book),
+    _CategoryItem(id: 'fitness', label: 'Fitness', icon: Icons.fitness_center),
+    _CategoryItem(id: 'grooming', label: 'Grooming', icon: Icons.content_cut),
+  ];
 
-  // ==================== Lifecycle ====================
+  final List<_OutfitItem> _outfits = const <_OutfitItem>[
+    _OutfitItem(id: 1, name: 'Casual Friday', itemCount: 3, emoji: '☀️', tag: 'Everyday'),
+    _OutfitItem(id: 2, name: 'Date Night', itemCount: 4, emoji: '🌙', tag: 'Special'),
+    _OutfitItem(id: 3, name: 'Office Ready', itemCount: 5, emoji: '💼', tag: 'Work'),
+    _OutfitItem(id: 4, name: 'Weekend Brunch', itemCount: 3, emoji: '🥂', tag: 'Leisure'),
+    _OutfitItem(id: 5, name: 'Gym Session', itemCount: 2, emoji: '🏋️', tag: 'Active'),
+  ];
+
+  final List<_TrendingItem> _trending = const <_TrendingItem>[
+    _TrendingItem(
+      category: 'Style',
+      title: 'Minimalist Summer',
+      description: '12 curated looks',
+      icon: Icons.trending_up,
+    ),
+    _TrendingItem(
+      category: 'Grooming',
+      title: 'Skin Routine',
+      description: '8 daily steps',
+      icon: Icons.local_fire_department,
+    ),
+  ];
+
+  final List<_TipItem> _quickTips = const <_TipItem>[
+    _TipItem(title: 'Color matching made simple', time: '3 min read', icon: Icons.star),
+    _TipItem(title: '5 wardrobe essentials for men', time: '5 min read', icon: Icons.bolt),
+    _TipItem(title: 'Grooming routine for beginners', time: '4 min read', icon: Icons.favorite),
+  ];
+
   @override
-  void initState() {
-    super.initState();
-    _loadOutfits();
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
-  /// Loads outfit data (dummy for now, backend later)
-  ///
-  /// To convert to backend:
-  /// Replace DummyOutfitData.getOutfits() with API call:
-  /// ```dart
-  /// _outfits = await OutfitService.fetchOutfits();
-  /// _featuredOutfit = await OutfitService.fetchFeaturedOutfit();
-  /// ```
-  void _loadOutfits() {
-    setState(() => _isLoading = true);
-
-    // Simulate network delay
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) {
-        setState(() {
-          _outfits = DummyOutfitData.getOutfits();
-          _featuredOutfit = DummyOutfitData.getTodaysOutfit();
-          _isLoading = false;
-        });
-      }
-    });
-  }
-
-  // ==================== Build ====================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: _buildBody(),
-    );
-  }
-
-  /// Builds the body content
-  Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            AppColors.authHeroAccent,
-          ),
+      backgroundColor: _bg,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    _buildHeader(),
+                    _buildCategories(),
+                    _buildFeaturedBanner(),
+                    _buildOutfitPlanner(),
+                    _buildTrending(),
+                    _buildQuickTips(),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+            _buildBottomNav(),
+          ],
         ),
-      );
-    }
-
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ==================== Greeting ====================
-          _buildGreeting(),
-
-          // ==================== Featured Outfit ====================
-          const SizedBox(height: AppDimensions.paddingL),
-          _buildFeaturedOutfit(),
-
-          // ==================== Style Picks Header ====================
-          const SizedBox(height: AppDimensions.paddingXXL),
-          _buildStylePicksHeader(),
-
-          // ==================== Outfit Cards (Scrollable) ====================
-          const SizedBox(height: AppDimensions.paddingL),
-          _buildOutfitCardsList(),
-
-          // ==================== Bottom Spacing ====================
-          const SizedBox(height: AppDimensions.paddingXXL),
-        ],
       ),
     );
   }
 
-  /// Builds the greeting section
-  Widget _buildGreeting() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppDimensions.paddingXL,
-        AppDimensions.paddingXL,
-        AppDimensions.paddingXL,
-        0,
+  Widget _buildHeader() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: _dark,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+      child: Column(
+        children: <Widget>[
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                DummyOutfitData.getGreeting('Sarah'),
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: Colors.white70,
-                  fontSize: 14,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.auto_awesome, size: 14, color: _gold),
+                        SizedBox(width: 6),
+                        Text(
+                          'AI-POWERED STYLE',
+                          style: TextStyle(
+                            color: _gold,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Good Morning,',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      'Himanshu',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Stack(
+                  children: const <Widget>[
+                    Icon(Icons.notifications_none, color: Color(0xFFCCCCCC)),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: CircleAvatar(radius: 4, backgroundColor: _gold),
+                    ),
+                  ],
+                ),
+              ),
+              const CircleAvatar(
+                radius: 20,
+                backgroundColor: Color(0xFF2A2A2A),
+                child: Text(
+                  'H',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                 ),
               ),
             ],
           ),
-          // Dropdown indicator
-          const Icon(
-            Icons.keyboard_arrow_down,
-            color: Colors.white54,
-            size: 20,
+          const SizedBox(height: 12),
+          Focus(
+            onFocusChange: (bool value) {
+              setState(() {
+                _searchFocused = value;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              decoration: BoxDecoration(
+                color: _searchFocused ? const Color(0xFF2A2A2A) : _darkSurface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: _searchFocused ? _gold.withOpacity(0.4) : Colors.transparent,
+                ),
+              ),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.search, color: _searchFocused ? _gold : const Color(0xFF666666)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      decoration: const InputDecoration(
+                        hintText: 'Search styles, outfits, tips...',
+                        hintStyle: TextStyle(color: Color(0xFF666666)),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  /// Featured outfit — dark card, no background image.
-  Widget _buildFeaturedOutfit() {
+  Widget _buildCategories() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingXL,
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      child: Row(
+        children: _categories.map((final _CategoryItem item) {
+          final bool isSelected = _selectedCategoryId == item.id;
+          return Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedCategoryId = isSelected ? null : item.id;
+                });
+              },
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: isSelected ? _gold : _dark,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      item.icon,
+                      color: isSelected ? _dark : _gold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    item.label,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isSelected ? _dark : const Color(0xFF888888),
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
       ),
+    );
+  }
+
+  Widget _buildFeaturedBanner() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
       child: Container(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height / 5.5,
-        ),
         width: double.infinity,
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFF141414),
-          borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: _dark,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.paddingXL),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _featuredOutfit.title,
-                style: AppTextStyles.headingLarge.copyWith(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Row(
+              children: <Widget>[
+                Icon(Icons.auto_awesome, size: 12, color: _gold),
+                SizedBox(width: 6),
+                Text(
+                  "TODAY'S PICK",
+                  style: TextStyle(
+                    color: _gold,
+                    fontSize: 10,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Your Style Score',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
               ),
-              const SizedBox(height: AppDimensions.paddingM),
-              Text(
-                _featuredOutfit.description,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: Colors.white70,
-                  fontSize: 15,
-                  height: 1.4,
-                ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              "AI analyzed your wardrobe - see what's trending",
+              style: TextStyle(color: Color(0xFFAAAAAA), fontSize: 13),
+            ),
+            const SizedBox(height: 14),
+            ElevatedButton.icon(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _gold,
+                foregroundColor: _dark,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-            ],
-          ),
+              icon: const Text(
+                'View Analysis',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+              ),
+              label: const Icon(Icons.arrow_forward, size: 16),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  /// Builds the "Style Picks for You" header
-  Widget _buildStylePicksHeader() {
+  Widget _buildOutfitPlanner() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingXL,
+      padding: const EdgeInsets.only(top: 20),
+      child: Column(
+        children: <Widget>[
+          _sectionHeader(title: 'Outfit Planner', actionText: 'See all'),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 165,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemBuilder: (BuildContext context, int index) {
+                final _OutfitItem outfit = _outfits[index];
+                final bool liked = _likedOutfits.contains(outfit.id);
+                return Container(
+                  width: 145,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE8E5E0)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: 86,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF0EDE8),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: Text(outfit.emoji, style: const TextStyle(fontSize: 30)),
+                            ),
+                            Positioned(
+                              top: 6,
+                              left: 6,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: _dark.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  outfit.tag,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (liked) {
+                                      _likedOutfits.remove(outfit.id);
+                                    } else {
+                                      _likedOutfits.add(outfit.id);
+                                    }
+                                  });
+                                },
+                                child: Icon(
+                                  liked ? Icons.favorite : Icons.favorite_border,
+                                  size: 16,
+                                  color: liked ? Colors.red : const Color(0xFFCCCCCC),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        outfit.name,
+                        style: const TextStyle(
+                          color: _dark,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${outfit.itemCount} items',
+                        style: const TextStyle(color: Color(0xFF888888), fontSize: 11),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemCount: _outfits.length,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrending() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      child: Column(
+        children: <Widget>[
+          _sectionHeader(title: 'Trending This Week', actionText: 'Explore'),
+          const SizedBox(height: 10),
+          Row(
+            children: _trending.map((final _TrendingItem item) {
+              return Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(right: item == _trending.first ? 8 : 0),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: _dark,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: _gold.withOpacity(0.16),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(item.icon, color: _gold, size: 16),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        item.category.toUpperCase(),
+                        style: const TextStyle(
+                          color: _gold,
+                          fontSize: 10,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item.description,
+                        style: const TextStyle(color: Color(0xFFAAAAAA), fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickTips() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 6),
+      child: Column(
+        children: <Widget>[
+          _sectionHeader(title: 'Quick Style Tips', actionText: 'More'),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 108,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemBuilder: (BuildContext context, int index) {
+                final _TipItem tip = _quickTips[index];
+                return Container(
+                  width: 220,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFE8E5E0)),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _bg,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(tip.icon, color: _gold, size: 18),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              tip.title,
+                              style: const TextStyle(
+                                color: _dark,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: <Widget>[
+                                const Icon(Icons.schedule, size: 11, color: Color(0xFFAAAAAA)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  tip.time,
+                                  style: const TextStyle(
+                                    color: Color(0xFFAAAAAA),
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemCount: _quickTips.length,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNav() {
+    const List<_TabItem> tabs = <_TabItem>[
+      _TabItem(label: 'Home', icon: Icons.home_outlined, activeIcon: Icons.home),
+      _TabItem(label: 'Wardrobe', icon: Icons.checkroom_outlined, activeIcon: Icons.checkroom),
+      _TabItem(label: 'AI Style', icon: Icons.auto_awesome_outlined, activeIcon: Icons.auto_awesome),
+      _TabItem(label: 'Insights', icon: Icons.bar_chart_outlined, activeIcon: Icons.bar_chart),
+      _TabItem(label: 'Profile', icon: Icons.person_outline, activeIcon: Icons.person),
+    ];
+
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: 8,
+        bottom: MediaQuery.of(context).padding.bottom > 0 ? 8 : 16,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Style Picks for You',
-            style: AppTextStyles.headingSmall.copyWith(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List<Widget>.generate(tabs.length, (int index) {
+          final bool isActive = _activeTab == index;
+          final bool isCenter = index == 2;
+          final _TabItem tab = tabs[index];
+          return InkWell(
+            onTap: () {
+              setState(() {
+                _activeTab = index;
+              });
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  width: isCenter ? 50 : 28,
+                  height: isCenter ? 50 : 28,
+                  decoration: isCenter
+                      ? BoxDecoration(
+                          color: _dark,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: _gold, width: 3),
+                        )
+                      : null,
+                  child: Icon(
+                    isActive ? tab.activeIcon : tab.icon,
+                    color: isCenter
+                        ? (isActive ? _gold : Colors.white)
+                        : (isActive ? _dark : const Color(0xFFCCCCCC)),
+                    size: isCenter ? 22 : 22,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tab.label,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                    color: isCenter
+                        ? (isActive ? _gold : const Color(0xFFAAAAAA))
+                        : (isActive ? _dark : const Color(0xFFAAAAAA)),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const Icon(
-            Icons.arrow_forward,
-            color: Colors.white54,
-          ),
-        ],
+          );
+        }),
       ),
     );
   }
 
-  /// Outfit cards as a single scroll (no nested ListView physics).
-  Widget _buildOutfitCardsList() {
+  Widget _sectionHeader({required String title, required String actionText}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingXL,
-      ),
-      child: Column(
-        children: [
-          for (final outfit in _outfits)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppDimensions.paddingL),
-              child: _buildOutfitCard(outfit),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            title,
+            style: const TextStyle(
+              color: _dark,
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
             ),
+          ),
+          TextButton(
+            onPressed: () {},
+            style: TextButton.styleFrom(
+              foregroundColor: _gold,
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  actionText,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(width: 2),
+                const Icon(Icons.chevron_right, size: 16),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
+}
 
-  /// Single outfit row — dark surface, no image.
-  Widget _buildOutfitCard(OutfitModel outfit) {
-    return GestureDetector(
-      onTap: () {
-        debugPrint('Tapped outfit: ${outfit.title}');
-      },
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 120),
-        decoration: BoxDecoration(
-          color: const Color(0xFF141414),
-          borderRadius: BorderRadius.circular(AppDimensions.borderRadiusL),
-          border: Border.all(color: Colors.white.withOpacity(0.06)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.paddingL),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                outfit.title,
-                style: AppTextStyles.headingSmall.copyWith(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: AppDimensions.paddingS),
-              Text(
-                outfit.description,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: Colors.white60,
-                  fontSize: 13,
-                  height: 1.35,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+class _CategoryItem {
+  const _CategoryItem({required this.id, required this.label, required this.icon});
+
+  final String id;
+  final String label;
+  final IconData icon;
+}
+
+class _OutfitItem {
+  const _OutfitItem({
+    required this.id,
+    required this.name,
+    required this.itemCount,
+    required this.emoji,
+    required this.tag,
+  });
+
+  final int id;
+  final String name;
+  final int itemCount;
+  final String emoji;
+  final String tag;
+}
+
+class _TrendingItem {
+  const _TrendingItem({
+    required this.category,
+    required this.title,
+    required this.description,
+    required this.icon,
+  });
+
+  final String category;
+  final String title;
+  final String description;
+  final IconData icon;
+}
+
+class _TipItem {
+  const _TipItem({required this.title, required this.time, required this.icon});
+
+  final String title;
+  final String time;
+  final IconData icon;
+}
+
+class _TabItem {
+  const _TabItem({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData activeIcon;
 }
