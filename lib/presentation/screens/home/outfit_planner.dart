@@ -37,7 +37,7 @@ class _OutfitPlannerSectionState extends State<OutfitPlannerSection> {
       padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          _sectionHeader(title: 'Outfit Planner', actionText: 'See all'),
+          _sectionHeader(title: 'Outfit Suggestions'),
           const SizedBox(height: 8),
           SizedBox(
             height: 165,
@@ -70,7 +70,7 @@ class _OutfitPlannerSectionState extends State<OutfitPlannerSection> {
     );
   }
 
-  Widget _sectionHeader({required String title, required String actionText}) {
+  Widget _sectionHeader({required String title}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -79,15 +79,7 @@ class _OutfitPlannerSectionState extends State<OutfitPlannerSection> {
           Text(title,
               style:
                   const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-          TextButton(
-            onPressed: () {},
-            child: Row(
-              children: [
-                Text(actionText, style: const TextStyle(fontSize: 12)),
-                const Icon(Icons.chevron_right, size: 16),
-              ],
-            ),
-          ),
+
         ],
       ),
     );

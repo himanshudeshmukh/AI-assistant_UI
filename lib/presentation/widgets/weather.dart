@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:profiler/presentation/widgets/smart_weather_card.dart';
+import 'package:Kaivon/presentation/widgets/smart_weather_card.dart';
 import 'package:provider/provider.dart';
 import '../../data/controller/weather_controller.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:profiler/presentation/screens/navigation/main_navigation.dart';
-import 'package:profiler/presentation/widgets/no_internet_widget.dart';
+import 'package:Kaivon/presentation/screens/navigation/main_navigation.dart';
+import 'package:Kaivon/presentation/widgets/no_internet_widget.dart';
 import 'package:provider/provider.dart';
 import 'data/controller/weather_controller.dart';
 import 'data/network/internet_provider.dart';

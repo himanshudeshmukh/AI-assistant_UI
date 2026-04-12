@@ -794,7 +794,7 @@
 
 // lib/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:profiler/presentation/screens/home/skeleton.dart';
+import 'package:Kaivon/presentation/screens/startUp/skeleton.dart';
 import 'package:provider/provider.dart';
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/app_dimensions.dart';
@@ -838,8 +838,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     const HomeHeader(),
-                    SearchBox(),
-                    SizedBox(height: 15),
+
+
                     OutfitCard(),
                     SizedBox(height: 15),
                     Padding(
@@ -849,15 +849,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: const [
                           Expanded(child: DateCard()),
                           SizedBox(width: 10),
+                          Expanded(child: Trip()),
+                          SizedBox(width: 10),
                           Expanded(child: DataCard()),
+                          SizedBox(width: 10),
+                          Expanded(child: StyleYourSelf()),
                         ],
                       ),
                     ),
-                    SizedBox(height: 25),
-                    const CategoriesSection(),
                     SizedBox(height: 15),
                     const OutfitPlannerSection(),
-                    SizedBox(height: 15),
+                    SizedBox(height: 25),
+                    const CategoriesSection(),
+                    SizedBox(height: 25),
+
                     const WeatherWidget(),
                     const SizedBox(height: AppDimensions.paddingL),
                   ],
