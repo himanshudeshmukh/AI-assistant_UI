@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../data/controller/weather_controller.dart';
-import '../screens/home/home_screen.dart';
+import 'package:Kaivon/config/theme/app_colors.dart';
+import '../screens/auth/welcom_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,67 +10,72 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+  late Animation<double> scaleAnimation;
+  late Animation<double> fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
-  }
 
-  Future<void> _navigateToHome() async {
-    // Wait for initial weather fetch (max 2 seconds)
-    final controller = context.read<WeatherController>();
-    await Future.wait([
-      // controller.loadFromCache(),
-      Future.delayed(const Duration(seconds: 1)), // Minimum splash duration
-    ]);
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
 
-    if (mounted) {
+    scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _controller.forward();
+
+    Timer(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const WelcomeScreen()),
       );
-    }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.checkroom,
-              size: 80,
-              color: Colors.blue,
+        child: FadeTransition(
+          opacity: fadeAnimation,
+          child: ScaleTransition(
+            scale: scaleAnimation,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                /// 🔥 RESPONSIVE LOGO (FIXED)
+                Image.asset(
+                  "assets/images/img.svg", // or png if svg fails
+                  width: size.width * 0.6,   // 👈 responsive width
+                  fit: BoxFit.contain,
+                ),
+
+                SizedBox(height: size.height * 0.02),
+              ],
             ),
-            const SizedBox(height: 24),
-            const Text(
-              'Wardrobe App',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 48),
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            Consumer<WeatherController>(
-              builder: (context, controller, child) {
-                if (controller.hasData) {
-                  return const Text(
-                    'Weather data ready!',
-                    style: TextStyle(color: Colors.green),
-                  );
-                }
-                return const Text(
-                  'Loading weather data...',
-                  style: TextStyle(color: Colors.grey),
-                );
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

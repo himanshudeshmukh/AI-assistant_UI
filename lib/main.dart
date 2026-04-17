@@ -1,6 +1,8 @@
+import 'package:Kaivon/presentation/notifications/notification.dart';
+import 'package:Kaivon/presentation/screens/auth/welcom_screen.dart';
+import 'package:Kaivon/presentation/widgets/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Kaivon/presentation/screens/navigation/main_navigation.dart';
 import 'package:Kaivon/presentation/widgets/no_internet_widget.dart';
 import 'package:provider/provider.dart';
 import 'data/controller/weather_controller.dart';
@@ -11,6 +13,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ==============================
+  // 🔔 INIT NOTIFICATIONS (NEW)
+  // ==============================
+  await NotificationService().initializeNotifications();
 
   final connectivityResult = await Connectivity().checkConnectivity();
 
@@ -51,9 +58,7 @@ class WardrobeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final internet = context.watch<InternetProvider>();
-
-    return MaterialApp(
+   return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Victus One',
       theme: ThemeData(
@@ -61,7 +66,8 @@ class WardrobeApp extends StatelessWidget {
         fontFamily: 'Poppins', // Optional: Add custom font
       ),
       home: NoInternetScreen(
-        child: const MainNavigation(), // your app
+        child: const WelcomeScreen(), // your app
+        // child: MainNavigation(),
       ),
     );
   }

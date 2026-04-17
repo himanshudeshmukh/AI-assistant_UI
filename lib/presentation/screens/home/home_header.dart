@@ -1,6 +1,7 @@
 import 'package:Kaivon/presentation/screens/home/liked_outfits.dart';
 import 'package:Kaivon/presentation/screens/home/recommendation_screen.dart';
 import 'package:Kaivon/presentation/screens/home/silhouette.dart';
+import 'package:Kaivon/presentation/screens/payment/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../config/theme/app_colors.dart';
@@ -54,7 +55,9 @@ class HomeHeader extends StatelessWidget {
                   Icons.notifications_active
                 )),
                 const SizedBox(height: 4),
-                IconButton(onPressed: (){}, icon: Icon(
+                IconButton(onPressed: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute( builder: (_) => const PaymentScreen(),),);
+                }, icon: Icon(
                     Icons.account_balance_wallet
                 )
                 ),

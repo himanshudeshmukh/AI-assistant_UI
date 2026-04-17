@@ -148,7 +148,6 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const background = Color(0xFFF5F5F5);
   static const surface = Colors.white;
 
   static const textPrimary = Color(0xFF111111);
@@ -208,6 +207,7 @@ class AppColors {
 
   static const Color confidenceAccent = softTeal500;
   static const Color confidenceAccentDark = softTeal700;
+  static const Color background = Color(0xFF7EC4C4);
   static const Color confidenceAccentLight = softTeal200;
 
   static const Color wellnessAccent = sageGreen500;
@@ -218,4 +218,5 @@ class AppColors {
   static const Color backgroundLight = slateBlue50;
   static const Color backgroundCard = Colors.white;
 
+  static const Color welcomeScreenColor = Color(0xFFFF5252);
 }

@@ -73,12 +73,37 @@ class _MainNavigationState extends State<MainNavigation> {
 
   /* ================= PAGES ================= */
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const GenerateScreen(),
-    const WardrobeGalleryPage(),
-    const ProfileScreen(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pages = [
+      const HomeScreen(),
+      const GenerateScreen(
+        // onBackToHome: () {
+        //   setState(() {
+        //     _currentIndex = 0;
+        //   });
+        // },
+      ),
+      const WardrobeGalleryPage(
+        // onBackToHome: () {
+        //   setState(() {
+        //     _currentIndex = 0;
+        //   });
+        // },
+      ),
+      ProfileScreen(
+        onBackToHome: () {
+          setState(() {
+            _currentIndex = 0;
+          });
+        },
+      ),
+    ];
+  }
 
   /* ================= BACK BUTTON HANDLER ================= */
 

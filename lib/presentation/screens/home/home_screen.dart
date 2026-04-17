@@ -828,10 +828,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final internet = context.watch<InternetProvider>();
     return Scaffold(
-      // backgroundColor: AppColors.wellnessAccent,
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          RippleBackgroundLayer(),
+          // RippleBackgroundLayer(),
 
             SafeArea(
               child: isLoading
