@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:Kaivon/config/theme/app_colors.dart';
 
+import '../explorer/explorer.dart';
 import '../home/home_screen.dart';
 import '../home/recommendation_screen.dart';
 import '../home/wardrobe_gallery_page.dart';
@@ -27,9 +28,10 @@ class _MainNavigationState extends State<MainNavigation> {
     const HomeScreen(),
     const GenerateScreen(),
     const WardrobeGalleryPage(),
-    ProfileScreen(
-      onBackToHome: () => setState(() => _currentIndex = 0),
-    ),
+    // ProfileScreen(
+    //   onBackToHome: () => setState(() => _currentIndex = 0),
+    // ),
+    const Explorer(),
   ];
 
   // ================= IMAGE PICK =================
@@ -182,7 +184,7 @@ class _MainNavigationState extends State<MainNavigation> {
       borderRadius: w * 0.08,
       elevation: w * 0.02,
 
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.cyan.withOpacity(0.4),
       activeColor: AppColors.softTeal300,
     );
   }
