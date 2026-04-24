@@ -1,8 +1,0 @@
-{
-  "terminal.integrated.env.windows": {
-    "PUB_CACHE": "D:\\VictusOneApp\\.pub-cache"
-  },
-  "dart.env": {
-    "PUB_CACHE": "D:\\VictusOneApp\\.pub-cache"
-  }
-}
