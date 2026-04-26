@@ -7,6 +7,8 @@
 /// - Request timeout management
 /// - JSON serialization/deserialization
 ///
+/// Spring Boot JSON routes use `ApiResponse<T>`; see [ApiConfig.apiPrefix].
+///
 /// Uses http package. Add to pubspec.yaml:
 /// dependencies:
 ///   http: ^1.1.0
@@ -14,19 +16,29 @@ library;
 
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
+import '../../config/constants/api_config.dart';
+import '../../data/models/api_envelope.dart';
 import '../../data/models/authentication_models.dart';
+import '../../data/models/user_api_models.dart';
+import '../../data/models/wallet_api_models.dart';
 
 /// Exception thrown when API requests fail
+///
+/// For Spring `400` validation responses, [fieldErrors] may hold field → message.
 class ApiException implements Exception {
   final String message;
   final int? statusCode;
   final Map<String, dynamic>? responseBody;
+  final Map<String, String>? fieldErrors;
 
   ApiException({
     required this.message,
     this.statusCode,
     this.responseBody,
+    this.fieldErrors,
   });
 
   @override
@@ -56,14 +68,17 @@ class ApiClient {
 
   // ==================== Configuration ====================
 
-  /// Base URL for the backend API
-  /// Update this with your actual backend URL
+  /// Base URL prefix for JSON APIs (Spring `/api/v1`).
+  ///
+  /// Set at build/run time, for example:
+  /// `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080`
   ///
   /// Examples:
-  /// - Local development: http://192.168.1.100:8080/api
-  /// - Staging: https://staging-api.example.com/api
-  /// - Production: https://api.example.com/api
-  static const String baseUrl = 'http://192.168.1.100:8080/api';
+  /// - Android emulator → host: `http://10.0.2.2:8080`
+  /// - iOS simulator → host: `http://127.0.0.1:8080`
+  /// - Staging: `https://staging-api.example.com`
+  /// - Production: `https://api.example.com`
+  static String get baseUrl => ApiConfig.apiPrefix;
 
   /// Request timeout duration
   static const Duration requestTimeout = Duration(seconds: 30);
@@ -73,6 +88,9 @@ class ApiClient {
   /// This token is automatically added to all subsequent requests
   /// in the Authorization header as: "Bearer {token}"
   String? _authToken;
+
+  /// Cached user from register / verify-otp / profile calls (Spring API).
+  User? _currentUser;
 
   // ==================== Getter & Setter ====================
 
@@ -89,6 +107,11 @@ class ApiClient {
     _authToken = null;
   }
 
+  /// Last user from [register] / [verifyOtp] / [updateProfile] / [deleteProfile].
+  User? get currentUser => _currentUser;
+
+  String? get currentUserId => _currentUser?.id;
+
   // ==================== Headers ====================
 
   /// Build common headers for all requests
@@ -98,7 +121,7 @@ class ApiClient {
   /// - Authorization: Bearer {token} (if logged in)
   /// - Accept: application/json
   Map<String, String> _buildHeaders() {
-    final headers = {
+    final headers = <String, String>{
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
@@ -111,6 +134,12 @@ class ApiClient {
     return headers;
   }
 
+  Uri _uri(String path, [Map<String, String>? query]) {
+    final p = path.startsWith('/') ? path : '/$path';
+    final base = Uri.parse(baseUrl);
+    return base.replace(path: '${base.path}$p', queryParameters: query);
+  }
+
   // ==================== Request Methods ====================
 
   /// Make a GET request
@@ -119,7 +148,7 @@ class ApiClient {
   ///   - endpoint: API endpoint path (e.g., '/users/profile')
   ///
   /// Returns:
-  /// - Decoded JSON response as Map<String, dynamic>
+  /// - Decoded JSON response as Map<String, dynamic> (legacy: full body on 2xx)
   ///
   /// Throws:
   /// - ApiException on network or HTTP errors
@@ -130,16 +159,11 @@ class ApiClient {
   /// ```
   Future<Map<String, dynamic>> get(String endpoint) async {
     try {
-      final url = Uri.parse('$baseUrl$endpoint');
-
       final response = await http
-          .get(
-        url,
-        headers: _buildHeaders(),
-      )
+          .get(_uri(endpoint), headers: _buildHeaders())
           .timeout(requestTimeout);
 
-      return _handleResponse(response);
+      return _handleLegacyResponse(response);
     } on TimeoutException {
       throw ApiException(
         message: 'Request timeout. Please check your connection.',
@@ -171,21 +195,19 @@ class ApiClient {
   /// );
   /// ```
   Future<Map<String, dynamic>> post(
-      String endpoint, {
-        required Map<String, dynamic> body,
-      }) async {
+    String endpoint, {
+    required Map<String, dynamic> body,
+  }) async {
     try {
-      final url = Uri.parse('$baseUrl$endpoint');
-
       final response = await http
           .post(
-        url,
-        headers: _buildHeaders(),
-        body: jsonEncode(body),
-      )
+            _uri(endpoint),
+            headers: _buildHeaders(),
+            body: jsonEncode(body),
+          )
           .timeout(requestTimeout);
 
-      return _handleResponse(response);
+      return _handleLegacyResponse(response);
     } on TimeoutException {
       throw ApiException(
         message: 'Request timeout. Please check your connection.',
@@ -209,21 +231,19 @@ class ApiClient {
   /// Throws:
   /// - ApiException on errors
   Future<Map<String, dynamic>> put(
-      String endpoint, {
-        required Map<String, dynamic> body,
-      }) async {
+    String endpoint, {
+    required Map<String, dynamic> body,
+  }) async {
     try {
-      final url = Uri.parse('$baseUrl$endpoint');
-
       final response = await http
           .put(
-        url,
-        headers: _buildHeaders(),
-        body: jsonEncode(body),
-      )
+            _uri(endpoint),
+            headers: _buildHeaders(),
+            body: jsonEncode(body),
+          )
           .timeout(requestTimeout);
 
-      return _handleResponse(response);
+      return _handleLegacyResponse(response);
     } on TimeoutException {
       throw ApiException(
         message: 'Request timeout. Please check your connection.',
@@ -247,16 +267,11 @@ class ApiClient {
   /// - ApiException on errors
   Future<Map<String, dynamic>> delete(String endpoint) async {
     try {
-      final url = Uri.parse('$baseUrl$endpoint');
-
       final response = await http
-          .delete(
-        url,
-        headers: _buildHeaders(),
-      )
+          .delete(_uri(endpoint), headers: _buildHeaders())
           .timeout(requestTimeout);
 
-      return _handleResponse(response);
+      return _handleLegacyResponse(response);
     } on TimeoutException {
       throw ApiException(
         message: 'Request timeout. Please check your connection.',
@@ -270,7 +285,7 @@ class ApiClient {
 
   // ==================== Response Handling ====================
 
-  /// Handle HTTP response
+  /// Handle HTTP response (legacy paths: full JSON map on 2xx).
   ///
   /// - 2xx: Return decoded JSON
   /// - 4xx/5xx: Throw ApiException with error details
@@ -283,27 +298,76 @@ class ApiClient {
   ///
   /// Throws:
   /// - ApiException on error status codes
-  Map<String, dynamic> _handleResponse(http.Response response) {
+  Map<String, dynamic> _handleLegacyResponse(http.Response response) {
     try {
-      final decodedResponse = jsonDecode(response.body);
+      final decoded = jsonDecode(response.body);
+      if (decoded is! Map<String, dynamic>) {
+        throw ApiException(
+          message: 'Unexpected response',
+          statusCode: response.statusCode,
+        );
+      }
 
       // Success response (2xx)
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        return decodedResponse;
+        return decoded;
       }
 
       // Error response (4xx, 5xx)
+      final fieldErrors = validationFieldErrorsFromData(
+        decoded['data'],
+        response.statusCode,
+      );
       throw ApiException(
-        message: decodedResponse['message'] ??
+        message: decoded['message']?.toString() ??
             'Request failed with status code ${response.statusCode}',
         statusCode: response.statusCode,
-        responseBody: decodedResponse,
+        responseBody: decoded,
+        fieldErrors: fieldErrors,
       );
     } catch (e) {
       if (e is ApiException) {
         rethrow;
       }
 
+      throw ApiException(
+        message: 'Failed to decode response',
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  /// Unwrap Spring `ApiResponse<T>` and return [data], or throw [ApiException].
+  dynamic _unwrapSpringEnvelope(http.Response response) {
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is! Map<String, dynamic>) {
+        throw ApiException(
+          message: 'Unexpected response',
+          statusCode: response.statusCode,
+        );
+      }
+      final success = decoded['success'] as bool?;
+      final okHttp = response.statusCode >= 200 && response.statusCode < 300;
+
+      if (!okHttp || success == false) {
+        final msg = decoded['message']?.toString() ?? 'Request failed';
+        final err = decoded['error']?.toString();
+        final combined = err != null && err.isNotEmpty ? '$msg ($err)' : msg;
+        final fieldErrors = validationFieldErrorsFromData(
+          decoded['data'],
+          response.statusCode,
+        );
+        throw ApiException(
+          message: combined,
+          statusCode: response.statusCode,
+          responseBody: decoded,
+          fieldErrors: fieldErrors,
+        );
+      }
+      return decoded['data'];
+    } catch (e) {
+      if (e is ApiException) rethrow;
       throw ApiException(
         message: 'Failed to decode response',
         statusCode: response.statusCode,
@@ -319,17 +383,294 @@ class ApiClient {
   ///   - error: The error that occurred
   ///
   /// Throws:
-  /// - ApiException always
+  /// - ApiException always (unless [error] is already [ApiException])
   void _handleError(Object error) {
     print('🔴 API Error: $error');
 
     if (error is ApiException) {
       // rethrow;
+      return;
     }
 
     throw ApiException(
       message: 'Network error: ${error.toString()}',
     );
+  }
+
+  // ==================== Spring Boot: users ====================
+
+  Future<String> usersHealth() async {
+    try {
+      final res = await http
+          .get(_uri('/users/health'), headers: _buildHeaders())
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      return data is String ? data : '$data';
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<User> register(RegisterRequest request) async {
+    try {
+      final res = await http
+          .post(
+            _uri('/users/register'),
+            headers: _buildHeaders(),
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid user payload', statusCode: res.statusCode);
+      }
+      final user = User.fromJson(data);
+      _currentUser = user;
+      return user;
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<User> verifyOtp(VerifyOtpRequest request) async {
+    try {
+      final res = await http
+          .post(
+            _uri('/users/verify-otp'),
+            headers: _buildHeaders(),
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid user payload', statusCode: res.statusCode);
+      }
+      final user = User.fromJson(data);
+      _currentUser = user;
+      return user;
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<String> sendLoginOtp(SendLoginOtpRequest request) async {
+    try {
+      final res = await http
+          .post(
+            _uri('/users/login/send-otp'),
+            headers: _buildHeaders(),
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      return data is String ? data : '$data';
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<User> updateProfile(String userId, ProfileUpdateRequest request) async {
+    try {
+      final res = await http
+          .put(
+            _uri('/users/$userId/profile'),
+            headers: _buildHeaders(),
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(requestTimeout);
+      if (res.statusCode == 202) {
+        try {
+          final decoded = jsonDecode(res.body);
+          if (decoded is Map<String, dynamic>) {
+            final msg = decoded['message']?.toString() ?? 'Accepted';
+            throw ApiException(
+              message: msg,
+              statusCode: 202,
+              responseBody: decoded,
+            );
+          }
+        } catch (_) {}
+        throw ApiException(
+          message: 'Firebase verification required for mobile change',
+          statusCode: 202,
+        );
+      }
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid user payload', statusCode: res.statusCode);
+      }
+      final user = User.fromJson(data);
+      _currentUser = user;
+      return user;
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<User> deleteProfile(String userId) async {
+    try {
+      final res = await http
+          .delete(_uri('/users/$userId/profile'), headers: _buildHeaders())
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid user payload', statusCode: res.statusCode);
+      }
+      final user = User.fromJson(data);
+      _currentUser = user;
+      return user;
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  // ==================== Spring Boot: wallets ====================
+
+  Future<int> walletBalance(String userId) async {
+    try {
+      final res = await http
+          .get(_uri('/wallets/$userId/balance'), headers: _buildHeaders())
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is int) return data;
+      if (data is num) return data.toInt();
+      throw ApiException(message: 'Invalid balance payload', statusCode: res.statusCode);
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<List<WalletTransaction>> walletTransactions(
+    String userId, {
+    int limit = 20,
+  }) async {
+    try {
+      final res = await http
+          .get(
+            _uri('/wallets/$userId/transactions', {'limit': '$limit'}),
+            headers: _buildHeaders(),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! List) {
+        throw ApiException(
+          message: 'Invalid transactions payload',
+          statusCode: res.statusCode,
+        );
+      }
+      return data
+          .whereType<Map<String, dynamic>>()
+          .map(WalletTransaction.fromJson)
+          .toList();
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<RazorpayIntentData> createTopUpIntent(
+    String userId, {
+    required int amountRupees,
+  }) async {
+    try {
+      final res = await http
+          .post(
+            _uri('/wallets/$userId/topup-intent', {
+              'amountRupees': '$amountRupees',
+            }),
+            headers: _buildHeaders(),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid intent payload', statusCode: res.statusCode);
+      }
+      return RazorpayIntentData.fromJson(data);
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
+  }
+
+  Future<RazorpayIntentData> createSubscriptionIntent(
+    String userId, {
+    required int amountRupees,
+  }) async {
+    try {
+      final res = await http
+          .post(
+            _uri('/wallets/$userId/subscription-intent', {
+              'amountRupees': '$amountRupees',
+            }),
+            headers: _buildHeaders(),
+          )
+          .timeout(requestTimeout);
+      final data = _unwrapSpringEnvelope(res);
+      if (data is! Map<String, dynamic>) {
+        throw ApiException(message: 'Invalid intent payload', statusCode: res.statusCode);
+      }
+      return RazorpayIntentData.fromJson(data);
+    } on TimeoutException {
+      throw ApiException(
+        message: 'Request timeout. Please check your connection.',
+        statusCode: null,
+      );
+    } catch (e) {
+      _handleError(e);
+      rethrow;
+    }
   }
 
   // ==================== Authentication Endpoints ====================
@@ -428,5 +769,6 @@ class ApiClient {
   /// ```
   void logout() {
     clearAuthToken();
+    _currentUser = null;
   }
 }
