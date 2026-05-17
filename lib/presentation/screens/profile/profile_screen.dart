@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'profile_sound_toggle.dart';
+import 'help_support_screen.dart';
+import 'about_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final VoidCallback onBackToHome;
@@ -17,10 +19,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isSoundEnabled = true;
 
   void _handleEditProfile() {}
-  void _handleHelpSupport() {}
+
+  void _handleHelpSupport() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
+  }
+
   void _handlePoints() {}
   void _handleNotifications() {}
-  void _handleAbout() {}
+
+  void _handleAbout() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const AboutScreen()));
+  }
+
   void _handleLogout() {}
 
   @override
@@ -55,11 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               SizedBox(height: w * 0.05),
-
               _buildMenuSection(w),
-
               SizedBox(height: w * 0.05),
-
               ProfileSoundToggle(
                 isEnabled: _isSoundEnabled,
                 onToggle: (val) {
@@ -76,12 +85,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuSection(double w) {
     return Column(
       children: [
+        // --- PROFILE AVATAR PLACEHOLDER ---
+        Center(
+          child: CircleAvatar(
+            radius: w * 0.12,
+            backgroundColor: Colors.white,
+            child:
+                Icon(Icons.person, size: w * 0.15, color: Colors.grey.shade400),
+          ),
+        ),
+        SizedBox(height: w * 0.06),
+
         Row(
           children: [
             Expanded(
               child: _MenuCard(
-                icon: Icons.edit,
-                title: "Edit Profile",
+                customIcon: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      height: w * 0.08,
+                      width: w * 0.08,
+                      child: const CircularProgressIndicator(
+                        value: 0.75, // Set dynamic completion value here
+                        strokeWidth: 3.5,
+                        backgroundColor: Colors.white24,
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      ),
+                    ),
+                    Text(
+                      "75%",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: w * 0.025,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                backgroundColor:
+                    const Color(0xFF1E1E2E), // Dark background for contrast
+                textColor: Colors.white,
+                title: "Profile Completion",
                 onTap: _handleEditProfile,
               ),
             ),
@@ -95,33 +139,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-
         SizedBox(height: w * 0.04),
-
         _FullWidthMenuCard(
           icon: Icons.star,
-          title: "My Points",
+          title: "Complete Your Profile",
           onTap: _handlePoints,
         ),
-
         SizedBox(height: w * 0.03),
-
         _FullWidthMenuCard(
           icon: Icons.notifications,
           title: "Notifications",
           onTap: _handleNotifications,
         ),
-
         SizedBox(height: w * 0.03),
-
         _FullWidthMenuCard(
           icon: Icons.info_outline,
           title: "About",
           onTap: _handleAbout,
         ),
-
         SizedBox(height: w * 0.03),
-
         _FullWidthMenuCard(
           icon: Icons.logout,
           title: "Logout",
@@ -135,14 +171,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 // ================= SMALL CARD =================
 class _MenuCard extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final Widget? customIcon;
   final String title;
   final VoidCallback onTap;
+  final Color backgroundColor;
+  final Color textColor;
 
   const _MenuCard({
-    required this.icon,
+    this.icon,
+    this.customIcon,
     required this.title,
     required this.onTap,
+    this.backgroundColor = Colors.white,
+    this.textColor = Colors.black87,
   });
 
   @override
@@ -154,18 +196,22 @@ class _MenuCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: w * 0.06),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           children: [
-            Icon(icon, size: w * 0.08),
+            if (customIcon != null)
+              customIcon!
+            else if (icon != null)
+              Icon(icon, size: w * 0.08, color: textColor),
             SizedBox(height: w * 0.02),
             Text(
               title,
               style: TextStyle(
                 fontSize: w * 0.035,
                 fontWeight: FontWeight.w600,
+                color: textColor,
               ),
             ),
           ],
